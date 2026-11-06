@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#100b0d">
+<title>TOMREYES.JOURNAL — Independent Editorial</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Italiana&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --black: #100b0d;
+  --cherry: #3b111e;
+  --paper: #eae3d8;
+  --ink: #241e1d;
+  --muted: #a79b92;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--black);
+  color: var(--paper);
+  font-family: "DM Sans", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  isolation: isolate;
+  background: #100b0d;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.5), transparent 65%),
+    url("https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=2000&q=85")
+    center / cover no-repeat;
+  filter: grayscale(75%) brightness(.43);
+  transform: scale(1.04);
+  animation: reveal 2s ease both;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(0deg, #100b0d 0%, transparent 40%),
+    linear-gradient(115deg, transparent 55%, rgba(59,17,30,.42));
+  pointer-events: none;
+}
+
+@keyframes reveal {
+  from { opacity: 0; transform: scale(1.12); }
+  to { opacity: 1; transform: scale(1.04); }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 30px 5%;
+  border-bottom: 1px solid rgba(255,255,255,.18);
+}
+
+.logo {
+  font-family: "Italiana", serif;
+  font-size: clamp(18px, 2vw, 27px);
+  letter-spacing: .025em;
+  white-space: nowrap;
+}
+
+.logo em {
+  font-style: normal;
+  opacity: .72;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: clamp(14px, 2.3vw, 38px);
+}
+
+.nav a {
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  transition: opacity .25s;
+}
+
+.nav a:hover {
+  opacity: .55;
+}
+
+.hero-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 100px 5% 130px;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: .4em;
+  text-transform: uppercase;
+  color: #d4c5bb;
+}
+
+.hero h1 {
+  font-family: "Italiana", serif;
+  font-weight: 400;
+  font-size: clamp(48px, 8vw, 145px);
+  line-height: 1;
+  letter-spacing: -.045em;
+  margin: 34px 0;
+}
+
+.hero h1 em {
+  font-weight: 400;
+  color: #e4d6ca;
+}
+
+.hero-line {
+  width: 56px;
+  height: 1px;
+  background: var(--paper);
+  margin: 12px auto 32px;
+}
+
+.hero-description {
+  font-size: 11px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  line-height: 2.5;
+  color: #d2c4ba;
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: #c3b6ae;
+}
+
+.scroll-cue span {
+  display: block;
+  text-align: center;
+  font-size: 23px;
+  margin-top: 8px;
+}
+
+.editorial {
+  background: var(--paper);
+  color: var(--ink);
+  padding: 95px 7% 110px;
+}
+
+.section-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #aaa096;
+}
+
+.section-top span {
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.section-top h2 {
+  font-family: "Italiana", serif;
+  font-size: clamp(36px, 6vw, 80px);
+  font-weight: 400;
+  margin: 0;
+}
+
+.feature {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 7%;
+  align-items: center;
+  padding: 70px 0;
+  border-bottom: 1px solid #c7bcb0;
+}
+
+.feature-image {
+  width: 100%;
+  height: 490px;
+  object-fit: cover;
+  filter: grayscale(55%);
+}
+
+.feature-category {
+  font-size: 10px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: #775d5c;
+}
+
+.feature h3 {
+  font-family: "Italiana", serif;
+  font-size: clamp(40px, 5vw, 76px);
+  font-weight: 400;
+  line-height: 1.08;
+  margin: 26px 0;
+}
+
+.feature p {
+  max-width: 430px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: #645b56;
+}
+
+.read-link {
+  display: inline-block;
+  margin-top: 30px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ink);
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.archive {
+  padding: 80px 7% 110px;
+  background: #1b1014;
+}
+
+.archive h2 {
+  font-family: "Italiana", serif;
+  font-size: clamp(40px, 6vw, 78px);
+  font-weight: 400;
+  margin: 0 0 45px;
+}
+
+.archive-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 27px 0;
+  border-top: 1px solid rgba(255,255,255,.2);
+  transition: padding .3s, color .3s;
+}
+
+.archive-item:last-child {
+  border-bottom: 1px solid rgba(255,255,255,.2);
+}
+
+.archive-item:hover {
+  padding-left: 12px;
+  color: #b99a9d;
+}
+
+.archive-item span {
+  font-size: 10px;
+  letter-spacing: .15em;
+  color: #a99b96;
+}
+
+.archive-item strong {
+  flex: 1;
+  font-family: "Italiana", serif;
+  font-size: clamp(23px, 3vw, 40px);
+  font-weight: 400;
+}
+
+.footer {
+  padding: 35px 7%;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  background: #100b0d;
+  color: #b4a8a1;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 800px) {
+  .header {
+    flex-direction: column;
+    padding: 25px 5%;
+  }
+
+  .nav {
+    justify-content: center;
+  }
+
+  .nav a {
+    font-size: 9px;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 9vw, 75px);
+    overflow-wrap: anywhere;
+  }
+
+  .hero-description {
+    font-size: 9px;
+    letter-spacing: .12em;
+  }
+
+  .editorial {
+    padding: 65px 6%;
+  }
+
+  .feature {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 40px 0;
+  }
+
+  .feature-image {
+    height: 350px;
+  }
+
+  .archive {
+    padding: 65px 6%;
+  }
+
+  .archive-item {
+    flex-wrap: wrap;
+  }
+
+  .archive-item strong {
+    flex-basis: 70%;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<section class="hero" id="top">
+
+  <header class="header">
+    <a href="#top" class="logo">
+      TOMREYES.<em>JOURNAL</em>
+    </a>
+
+    <nav class="nav" aria-label="Ana menü">
+      <a href="#editorial">Yazılar</a>
+      <a href="#archive">Arşiv</a>
+      <a href="#about">Hakkında</a>
+    </nav>
+  </header>
+
+  <div class="hero-content">
+    <div class="eyebrow">Independent Editorial</div>
+
+    <h1>TOMREYES.<em>JOURNAL</em></h1>
+
+    <div class="hero-line"></div>
+
+    <div class="hero-description">
+      Sanat / Düşünce / Sinema / Edebiyat / Yaşam
+    </div>
+  </div>
+
+  <a href="#editorial" class="scroll-cue">
+    Explore
+    <span>↓</span>
+  </a>
+
+</section>
+
+<main>
+
+  <section class="editorial" id="editorial">
+
+    <div class="section-top">
+      <span>Selected Stories / 001</span>
+      <h2>Journal</h2>
+    </div>
+
+    <article class="feature">
+      <img
+        class="feature-image"
+        src="https://images.unsplash.com/photo-1545987796-200677ee1011?auto=format&fit=crop&w=1200&q=85"
+        alt="Sanatsal editoryal görsel"
+      >
+
+      <div>
+        <div class="feature-category">
+          Sanat / Deneme
+        </div>
+
+        <h3>Görmenin Başka Bir Biçimi</h3>
+
+        <p>
+          Sanat yalnızca gördüklerimizle değil,
+          görmeyi seçtiklerimizle de ilgilidir.
+          Bazen bir görüntü, uzun bir düşüncenin
+          başlangıcı olabilir.
+        </p>
+
+        <span class="read-link">
+          Yakında
+        </span>
+      </div>
+    </article>
+
+  </section>
+
+  <section class="archive" id="archive">
+    <h2>Archive.</h2>
+
+    <div class="archive-item">
+      <span>01 / SANAT</span>
+      <strong>Görmenin Başka Bir Biçimi</strong>
+      <span>YAKINDA</span>
+    </div>
+
+    <div class="archive-item">
+      <span>02 / DÜŞÜNCE</span>
+      <strong>İnsan ve Özgür İrade</strong>
+      <span>YAKINDA</span>
+    </div>
+
+    <div class="archive-item">
+      <span>03 / SİNEMA</span>
+      <strong>Hikâyelerin Ardında</strong>
+      <span>YAKINDA</span>
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="footer" id="about">
+  <span>TOMREYES.JOURNAL</span>
+  <span>Independent Art & Thought</span>
+  <span>© 2026</span>
+</footer>
+
+</body>
+</html>
