@@ -100,6 +100,53 @@
 .writing-gallery .archive-grid{border-top:0}
 .writing-gallery .archive-card:first-child{border-top:1px solid rgba(241,230,220,.45)}
 @media(max-width:800px){.writing-gallery{padding:15px 5% 60px}.writing-gallery .archive-card:first-child{padding-top:15px}}
+
+/* TOMREYES — Experimental Art Catalogue: article view only */
+.reader{--catalogue-paper:#d9ccbb;--catalogue-ink:#351923;background:var(--catalogue-paper);color:var(--catalogue-ink);padding:26px clamp(20px,5vw,78px) 0}
+.reader-top{max-width:1280px;border-bottom:1px solid #9d8b81;padding:4px 0 22px}
+.reader-top span{color:#47252d}
+.reader-close{color:#47252d}
+.reader-inner{max-width:1280px;margin:0 auto}
+.reader-opening{min-height:min(74vh,710px);grid-template-columns:minmax(0,1fr) minmax(240px,.8fr);gap:clamp(24px,6vw,110px);align-items:center;padding:clamp(40px,6vw,92px) 0 clamp(45px,7vw,100px);border-bottom:0;position:relative}
+.reader-opening:before{content:'';position:absolute;left:0;top:28px;width:40px;height:1px;background:#7e535b}
+.reader-kicker{color:#74565b;font-size:10px;letter-spacing:.23em}
+.reader-kicker:before{background:#74565b}
+.reader .reader-heading h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(62px,7.4vw,126px);line-height:.94;letter-spacing:-.045em;color:#32151f;margin:35px 0 35px}
+.reader-heading .reader-date{color:#795e5e;font-size:11px;letter-spacing:.18em}
+.reader-art{width:100%;justify-self:end;max-width:510px;position:relative;padding:18px 18px 0 0}
+.reader-art:before{content:'';position:absolute;inset:0 0 18px 18px;border:1px solid #a78f84;pointer-events:none}
+.reader-opening .reader-cover{position:relative;width:100%;height:auto;max-height:520px;object-fit:contain;filter:none;mix-blend-mode:multiply}
+.reader-art:after{content:'TOMREYES / FIG. 01';font-size:9px;letter-spacing:.18em;color:#775d5b;margin-top:17px}
+.reader-body-layout{position:relative;max-width:none;margin:0 calc(-1 * clamp(20px,5vw,78px));padding:clamp(70px,9vw,145px) clamp(20px,8vw,130px) clamp(70px,8vw,120px);display:grid;grid-template-columns:minmax(90px,1fr) minmax(0,720px) minmax(0,.25fr);gap:clamp(24px,5vw,85px);background:#25131c;color:#e7d9ce;justify-content:center;overflow:hidden}
+.reader-body-layout:before{content:'';position:absolute;width:min(36vw,410px);height:min(36vw,410px);border:1px solid rgba(219,188,176,.10);border-radius:50%;right:-14%;top:-180px;pointer-events:none}
+.reader-body-layout:after{content:'';position:absolute;left:clamp(20px,8vw,130px);right:clamp(20px,8vw,130px);top:35px;height:1px;background:rgba(235,218,205,.2)}
+.reader-side{color:#c7aaa8;font-size:11px;letter-spacing:.22em;padding-top:9px}
+.reader-body-layout>div{grid-column:2;min-width:0}
+.reader-body{font-size:clamp(16px,1.35vw,18px);line-height:2.05;letter-spacing:.005em;color:#e6d8cc}
+.reader-body p{margin:0 0 2em}
+.reader-body p:first-child::first-letter{font-family:'Cormorant Garamond',serif;color:#d6b6ad;font-size:5em;line-height:.76;padding:12px 14px 0 0}
+.reader-back{color:#e7d9ce;border-color:#8b6e70;margin-top:50px}
+.reader-ending{max-width:none;margin:0 calc(-1 * clamp(20px,5vw,78px));padding:32px clamp(20px,5vw,78px) 40px;background:#25131c;color:#ae9290;border-top:1px solid #57414a;font-size:9px}
+@media(max-width:800px){
+ .reader{padding:16px 6% 0}
+ .reader-opening{grid-template-columns:minmax(0,1fr) minmax(105px,38%);min-height:0;gap:18px;padding:66px 0 65px;align-items:center}
+ .reader-opening:before{top:30px}
+ .reader .reader-heading h2{font-size:clamp(39px,8.5vw,74px);margin:22px 0 24px;overflow-wrap:anywhere}
+ .reader-kicker{font-size:8px;letter-spacing:.1em;gap:8px}
+ .reader-kicker:before{width:17px}
+ .reader-art{width:100%;padding:9px 9px 0 0}
+ .reader-art:before{inset:0 0 10px 9px}
+ .reader-opening .reader-cover{max-height:300px}
+ .reader-art:after{font-size:7px;letter-spacing:.08em}
+ .reader-body-layout{margin:0 -6.82%;padding:85px 7% 85px;grid-template-columns:1fr;gap:26px}
+ .reader-body-layout:after{left:7%;right:7%}
+ .reader-side{padding:0}
+ .reader-body-layout>div{grid-column:1}
+ .reader-body{font-size:16px;line-height:1.95}
+ .reader-ending{margin:0 -6.82%;padding:30px 7% 35px}
+}
+@media(max-width:390px){.reader-opening{grid-template-columns:minmax(0,1fr) 34%;gap:12px}.reader .reader-heading h2{font-size:38px}}
+
 </style>
 </head>
 <body>
