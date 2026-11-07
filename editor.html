@@ -63,7 +63,7 @@ function build(){const doc=parse(source);let css=doc.querySelector('style')?.tex
 if(doc.querySelector('style'))doc.querySelector('style').textContent=css;
 // Preserve the original website script and replace only the demo entries array.
 const scripts=[...doc.querySelectorAll('script')];const script=scripts.find(s=>s.textContent.includes('const entries ='));
-if(script){const raw=JSON.stringify(entries).replace(/</g,'\\u003c');script.textContent=script.textContent.replace(/const entries\s*=\s*\[[\s\S]*?\];(?=\s*const ordered)/,'const entries = '+raw+';');script.textContent=script.textContent.replace('const safeImage=url=>/^https:', 'const safeImage=url=>/^(?:data:image\\/(?:png|jpeg|webp);base64,|https:');}
+if(script){const raw=JSON.stringify(entries).replace(/</g,'\\u003c');script.textContent=script.textContent.replace(/const entries\s*=\s*\[[\s\S]*?\];(?=\s*const ordered)/,'const entries = '+raw+';');script.textContent=script.textContent.replace(/^const safeImage=url=>[^\n]*/m,()=>String.raw`const safeImage=url=>/^(?:https:\/\/|data:image\/(?:png|jpeg|webp);base64,)/i.test(url||'')?url:'';`);new Function(script.textContent);}
 return serialize(doc)}
 function previewEntries(d){
  const latest=d.getElementById('latest-entry'),archive=d.getElementById('archive-grid');if(!latest||!archive)return;
