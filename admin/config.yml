@@ -1,7 +1,7 @@
 
 backend:
   name: github
-  repo: zmey-archive/tomreyes.journal
+  repo: zmey-archieve/tomreyes.journal
   branch: main
   base_url: https://tomreyes-journal-auth.tomreyeda.workers.dev
   auth_endpoint: auth
