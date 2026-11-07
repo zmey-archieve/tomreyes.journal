@@ -1,0 +1,27 @@
+
+backend:
+  name: github
+  repo: zmey-archive/tomreyes.journal
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+publish: false
+
+collections:
+  - name: "articles"
+    label: "Yazılar"
+    folder: "content/articles"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    fields:
+      - { label: "Başlık", name: "title", widget: "string" }
+      - { label: "Yayın Tarihi", name: "date", widget: "datetime" }
+      - { label: "Eser Numarası", name: "number", widget: "string", hint: "Örnek: 001" }
+      - { label: "Kısa Açıklama", name: "description", widget: "text", required: false }
+      - { label: "Kapak Görseli", name: "image", widget: "image", required: false }
+      - { label: "Vurgu Rengi", name: "color", widget: "color", required: false }
+      - { label: "Yazı", name: "body", widget: "markdown" }
