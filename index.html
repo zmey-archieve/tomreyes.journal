@@ -147,6 +147,29 @@
 }
 @media(max-width:390px){.reader-opening{grid-template-columns:minmax(0,1fr) 34%;gap:12px}.reader .reader-heading h2{font-size:38px}}
 
+
+/* TOMREYES / Retro × Industrial — gallery-only visual direction */
+.writing-gallery{position:relative;background:#1b1014;padding:clamp(30px,5vw,70px) 6.5% 115px;overflow:hidden}
+.writing-gallery:before{content:"";position:absolute;inset:0 0 auto;height:9px;background:linear-gradient(90deg,#5e2935 0%,#a49a92 22%,#33373a 47%,#c1b5a7 69%,#45202b 100%);opacity:.72}
+.writing-gallery .archive-grid{border:0;position:relative}
+.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){position:relative;grid-template-columns:minmax(140px,27%) minmax(0,1fr) 34px;gap:clamp(22px,4.5vw,76px);padding:clamp(24px,3.2vw,46px) clamp(5px,1.5vw,24px);border-bottom:1px solid rgba(222,205,192,.25);background:transparent;transition:background .4s,padding-left .4s}
+.writing-gallery .archive-card:first-child{border-top:1px solid rgba(222,205,192,.44)}
+.writing-gallery .archive-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(#b5a69b,#34373b,#9d5964);opacity:0;transition:opacity .3s}
+.writing-gallery .archive-card:hover{background:linear-gradient(90deg,rgba(120,84,89,.14),rgba(205,193,177,.035) 70%,transparent);padding-left:clamp(14px,2vw,32px)}
+.writing-gallery .archive-card:hover:before{opacity:1}
+.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(n) .archive-art{height:clamp(145px,17vw,265px);background:#34242a;box-shadow:13px 13px 0 -10px rgba(191,182,172,.44);border:1px solid rgba(215,204,192,.2)}
+.writing-gallery .archive-art img{filter:saturate(.7) contrast(1.04);transition:transform .8s,filter .5s}
+.writing-gallery .archive-card:hover .archive-art img{filter:saturate(.95) contrast(1.06);transform:scale(1.045)}
+.writing-gallery .archive-number{top:auto;bottom:10px;left:12px;background:rgba(21,16,19,.67);padding:6px 8px;color:#e8ded4;letter-spacing:.08em;font-size:9px}
+.writing-gallery .archive-details{gap:clamp(12px,1.5vw,22px)}
+.writing-gallery .archive-title{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:clamp(37px,5.2vw,84px);line-height:.98;letter-spacing:-.035em;color:#e9dfd4;max-width:900px}
+.writing-gallery .archive-card:nth-child(even) .archive-title{color:#d9c5b6}
+.writing-gallery .archive-date{font-family:"DM Sans",sans-serif;font-size:10px;letter-spacing:.17em;color:#b9a59e;text-transform:uppercase;border-top:1px solid rgba(204,187,173,.33);padding-top:13px}
+.writing-gallery .archive-card::after{content:'↗';font-size:24px;color:#c9b7aa;font-weight:300;align-self:center}
+.writing-gallery .archive-card:hover .archive-title{color:#f4e9dc}
+@media(max-width:800px){.writing-gallery{padding:27px 5% 70px}.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){grid-template-columns:minmax(90px,35%) minmax(0,1fr) 15px;gap:13px;padding:17px 0}.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(n) .archive-art{height:clamp(112px,24vw,175px);box-shadow:7px 7px 0 -5px rgba(191,182,172,.35)}.writing-gallery .archive-title{font-size:clamp(26px,6vw,46px)}.writing-gallery .archive-date{font-size:9px;letter-spacing:.05em;padding-top:9px}.writing-gallery .archive-number{font-size:8px;bottom:5px;left:5px;padding:4px}.writing-gallery .archive-card::after{font-size:16px}.writing-gallery .archive-card:hover{padding-left:5px}}
+@media(max-width:390px){.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){grid-template-columns:34% minmax(0,1fr) 12px;gap:9px}.writing-gallery .archive-title{font-size:25px}.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(n) .archive-art{height:100px}}
+
 </style>
 </head>
 <body>
