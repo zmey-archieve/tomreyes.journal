@@ -57,7 +57,16 @@ const entries = [{"id":"yazi-1794063374250","date":"2026-10-23","title":"Özgün
 const ordered=[...entries].sort((a,b)=>b.date.localeCompare(a.date));
 const formatDate=date=>new Intl.DateTimeFormat('tr-TR',{day:'2-digit',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z'));
 const escapeHTML=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-const safeImage=url=>/^(?:data:image\/(?:png|jpeg|webp);base64,|https:\/\//i.test(url||'')?url:'';
+
+const safeImage = url => {
+  if (typeof url !== 'string') return '';
+  return url.startsWith('https://') ||
+    url.startsWith('data:image/png;base64,') ||
+    url.startsWith('data:image/jpeg;base64,') ||
+    url.startsWith('data:image/webp;base64,')
+    ? url : '';
+};
+
 const latest=document.getElementById('latest-entry');const archive=document.getElementById('archive-grid');
 if(ordered.length){
   const entry=ordered[0];
