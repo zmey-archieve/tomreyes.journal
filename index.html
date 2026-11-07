@@ -381,7 +381,7 @@
 }
 .reader-art img.reader-cover{object-fit:contain!important;width:100%!important;height:auto!important;max-height:none!important;}
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&amp;display=swap" rel="stylesheet">
 </head>
 <body>
 <section class="hero" id="top">
@@ -391,7 +391,7 @@
 </section>
 <main>
 <section class="archive writing-gallery" id="gallery"><div class="gallery-filters" id="gallery-filters" aria-label="Yazı filtreleri"></div><div class="archive-grid" id="archive-grid"></div></section>
-<section class="about" id="about"><span class="about-label">Çıkış</span><div><p></p><small>TOMREYES</small></div></section>
+<section class="about" id="about"><span class="about-label"></span><div><p></p><small></small></div></section>
 </main>
 <footer class="footer"><span>TOMREYES.JOURNAL</span><span>An Open Canvas</span><span>© 2026</span></footer>
 <div class="reader" id="reader" hidden="" role="dialog" aria-modal="true" aria-labelledby="reader-title"><div class="reader-top"><span>TOMREYES.JOURNAL</span><button class="reader-close" type="button" id="reader-close">✕ Kapat</button></div><article class="reader-inner" id="reader-content"></article></div>
@@ -435,6 +435,7 @@ function closeReader(){if(window.__previewHash){window.__previewHash='';updateRe
 document.addEventListener('click',event=>{const link=event.target.closest('a[href^="#read/"]');if(link&&!location.hash.startsWith('#read/'))previousHash='#gallery'});
 document.getElementById('reader-close').addEventListener('click',closeReader);document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!reader.hidden)closeReader()});window.addEventListener('hashchange',updateReader);updateReader();
 </script>
+
 
 
 
