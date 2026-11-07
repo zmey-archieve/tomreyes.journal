@@ -76,7 +76,71 @@ function previewEntries(d){
  const body=d.createElement('div'),meta=d.createElement('div');meta.className='feature-meta';meta.textContent='/001 — '+fmt(a.date);const h=d.createElement('h3');h.textContent=a.title;const ex=d.createElement('p');ex.textContent=a.excerpt||'';const link=d.createElement('span');link.className='read-link';link.textContent='Yazıyı oku ↗';body.append(meta,h,ex,link);feature.append(art,body);latest.append(feature);
  archive.innerHTML='';ordered.forEach((item,i)=>{const card=d.createElement('div');card.className='archive-card';const art=d.createElement('div');art.className='archive-art';art.style.setProperty('--accent',/^#[0-9a-f]{6}$/i.test(item.color||'')?item.color:'#45303a');if(img(item.image)){const im=d.createElement('img');im.src=item.image;im.alt=item.title;art.append(im)}else{const no=d.createElement('span');no.className='archive-no-image';no.textContent=item.title;art.append(no)}const num=d.createElement('span');num.className='archive-number';num.textContent=String(i+1).padStart(3,'0')+' / JOURNAL';art.append(num);const details=d.createElement('div');details.className='archive-details';const title=d.createElement('strong');title.className='archive-title';title.textContent=item.title;const date=d.createElement('time');date.className='archive-date';date.textContent=fmt(item.date);details.append(title,date);card.append(art,details);card.style.cursor='pointer';card.addEventListener('click',()=>{selectedEntry=entries.indexOf(item);switchTab('articles');renderArticleFields();say('Yazı seçildi: '+item.title)});archive.append(card)});
 }
-function render(preserveScroll=true){const old=frame.contentDocument;const y=preserveScroll?old?.documentElement?.scrollTop||old?.body?.scrollTop||0:0;working=build();frame.onload=()=>{const d=frame.contentDocument;if(!d)return;d.addEventListener('click',e=>{const a=e.target.closest('a');if(a)e.preventDefault();const c=config.find(c=>c.selector&&e.target.closest(c.selector));if(c){e.preventDefault();e.stopPropagation();switchTab('page');const field=document.getElementById(c.id);field?.focus();field?.scrollIntoView({block:'center',behavior:'smooth'});d.querySelectorAll('.selected').forEach(n=>n.classList.remove('selected'));e.target.closest(c.selector).classList.add('selected');say('Seçildi: '+c.title)}},true);d.documentElement.scrollTop=y;d.body.scrollTop=y};frame.srcdoc=working}
+function openArticlePreview(d,entry){
+ if(!entry)return;
+ d.getElementById('tomreyes-editor-reader')?.remove();
+ const overlay=d.createElement('div');
+ overlay.id='tomreyes-editor-reader';
+ overlay.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#f2ede5;color:#24151c;overflow-y:auto;font-family:Georgia,serif;';
+ const wrap=d.createElement('div');
+ wrap.style.cssText='max-width:760px;margin:0 auto;padding:35px 24px 100px;';
+ const back=d.createElement('button');
+ back.type='button';back.textContent='← Dergiye dön';
+ back.style.cssText='background:transparent;border:0;color:#542633;cursor:pointer;font:14px Arial,sans-serif;padding:8px 0;margin-bottom:48px;';
+ const close=()=>{overlay.remove();d.body.style.overflow='';};
+ back.onclick=close;
+ const date=d.createElement('div');date.textContent=entry.date||'';
+ date.style.cssText='font:12px Arial,sans-serif;letter-spacing:.12em;color:#79535b;margin-bottom:20px;';
+ const title=d.createElement('h1');title.textContent=entry.title||'Başlıksız';
+ title.style.cssText='font:normal clamp(34px,5vw,62px)/1.12 Georgia,serif;margin:0 0 28px;';
+ wrap.append(back,date,title);
+ if(isImageSource(entry.image)){
+  const im=d.createElement('img');im.src=entry.image;im.alt=entry.title||'';
+  im.style.cssText='display:block;max-width:100%;width:100%;height:auto;object-fit:contain;margin:0 0 42px;';
+  wrap.append(im);
+ }
+ const paragraphs=Array.isArray(entry.body)?entry.body:String(entry.body||'').split(/\n\s*\n/);
+ paragraphs.forEach(part=>{
+  const para=d.createElement('p');para.textContent=String(part||'');
+  para.style.cssText='font:18px/1.9 Georgia,serif;white-space:pre-wrap;margin:0 0 24px;';
+  wrap.append(para);
+ });
+ overlay.append(wrap);d.body.append(overlay);d.body.style.overflow='hidden';
+ overlay.scrollTop=0;
+}
+function render(preserveScroll=true){
+ const old=frame.contentDocument;
+ const y=preserveScroll?old?.documentElement?.scrollTop||old?.body?.scrollTop||0:0;
+ working=build();
+ frame.onload=()=>{
+  const d=frame.contentDocument;if(!d)return;
+  // Preview articles are wired directly to the current unsaved editor entries.
+  // Capture before the live site's handlers to avoid mismatches with drafts.
+  d.addEventListener('click',e=>{
+   if(e.target.closest('#tomreyes-editor-reader'))return;
+   const feature=e.target.closest('#latest-entry .feature, #latest-entry .read-link');
+   const card=e.target.closest('#archive-grid .archive-card');
+   if(feature||card){
+    e.preventDefault();e.stopImmediatePropagation();
+    const ordered=[...entries].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+    const item=feature?ordered[0]:ordered[[...d.querySelectorAll('#archive-grid .archive-card')].indexOf(card)];
+    openArticlePreview(d,item);return;
+   }
+   const a=e.target.closest('a');if(a)e.preventDefault();
+   const c=config.find(c=>c.selector&&e.target.closest(c.selector));
+   if(c){
+    e.preventDefault();e.stopPropagation();switchTab('page');
+    const field=document.getElementById(c.id);
+    field?.focus();field?.scrollIntoView({block:'center',behavior:'smooth'});
+    d.querySelectorAll('.selected').forEach(n=>n.classList.remove('selected'));
+    e.target.closest(c.selector).classList.add('selected');
+    say('Seçildi: '+c.title);
+   }
+  },true);
+  d.documentElement.scrollTop=y;d.body.scrollTop=y;
+ };
+ frame.srcdoc=working;
+}
 function extractEntries(src){const match=src.match(/const entries\s*=\s*(\[[\s\S]*?\]);(?=\s*const ordered)/);if(!match)return [];try{const data=JSON.parse(match[1]);return Array.isArray(data)?data:[]}catch{return []}}
 function switchTab(tab){activeTab=tab;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));fields.hidden=tab==='articles';document.getElementById('article-panel').hidden=tab!=='articles';if(tab==='articles')renderArticleFields();else makeFields()}
 function renderArticleFields(){const panel=document.getElementById('article-panel');panel.replaceChildren();const heading=document.createElement('h2');heading.textContent='Yazılar.';panel.append(heading);const note=document.createElement('p');note.className='hint';note.textContent='Yeni yazı ekle, seç, düzenle veya sil. Sağdaki önizleme anında güncellenir.';panel.append(note);const add=document.createElement('button');add.textContent='+ Yeni yazı';add.onclick=()=>{entries.unshift({id:'yazi-'+Date.now(),date:new Date().toISOString().slice(0,10),title:'Yeni yazı',excerpt:'',image:'',color:'#493039',body:['']});selectedEntry=0;renderArticleFields();render();say('Yeni yazı eklendi (henüz yayımlanmadı).')};panel.append(add);const list=document.createElement('div');list.className='entry-list';entries.forEach((e,i)=>{const b=document.createElement('button');b.className='entry-item'+(selectedEntry===i?' active':'');b.textContent=(e.title||'Başlıksız')+' · '+(e.date||'');b.onclick=()=>{selectedEntry=i;renderArticleFields()};list.append(b)});panel.append(list);if(selectedEntry<0||!entries[selectedEntry]){const n=document.createElement('p');n.className='empty-note';n.textContent=entries.length?'Düzenlemek için bir yazı seç.':'Henüz yazı yok. İlk yazını ekleyebilirsin.';panel.append(n);return}const e=entries[selectedEntry];const defs=[['title','Başlık','text'],['date','Yayın tarihi','date'],['excerpt','Kısa açıklama','textarea'],['image','Kapak görseli','image'],['color','Vurgu rengi','color'],['body','Yazının tamamı (paragrafları boş satırla ayır)','textarea']];for(const [key,label,type] of defs){const l=document.createElement('label');l.textContent=label;panel.append(l);const input=document.createElement(type==='textarea'?'textarea':'input');if(type!=='textarea')input.type=type;input.value=key==='body'?(e.body||[]).join('\n\n'):(e[key]||'');if(key==='body')input.style.minHeight='210px';input.addEventListener('input',()=>{e[key]=key==='body'?input.value.split(/\n\s*\n/):input.value;render()});panel.append(input);if(type==='image')addImageControls(panel,input,'article-image')}const buttons=document.createElement('div');buttons.className='rowbtn';const remove=document.createElement('button');remove.className='danger';remove.textContent='Yazıyı sil';remove.onclick=()=>{if(!confirm('Bu yazıyı taslaktan silmek istiyor musun?'))return;entries.splice(selectedEntry,1);selectedEntry=-1;renderArticleFields();render()};buttons.append(remove);panel.append(buttons)}
