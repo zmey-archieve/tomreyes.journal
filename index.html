@@ -1,491 +1,80 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#100b0d">
-<title>TOMREYES.JOURNAL — Independent Editorial</title>
-
+<meta name="description" content="TOMREYES.JOURNAL — Bir konu etrafında değil, bir zihin etrafında şekillenen dijital düşünce sergisi.">
+<title>TOMREYES.JOURNAL — Dijital Düşünce Sergisi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Italiana&display=swap" rel="stylesheet">
-
 <style>
-:root {
-  --black: #100b0d;
-  --cherry: #3b111e;
-  --paper: #eae3d8;
-  --ink: #241e1d;
-  --muted: #a79b92;
-}
-
-* { box-sizing: border-box; }
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  background: var(--black);
-  color: var(--paper);
-  font-family: "DM Sans", sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  font: inherit;
-}
-
-.hero {
-  position: relative;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  isolation: isolate;
-  background: #100b0d;
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  background:
-    linear-gradient(90deg, rgba(0,0,0,.5), transparent 65%),
-    url("https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=2000&q=85")
-    center / cover no-repeat;
-  filter: grayscale(75%) brightness(.43);
-  transform: scale(1.04);
-  animation: reveal 2s ease both;
-}
-
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    linear-gradient(0deg, #100b0d 0%, transparent 40%),
-    linear-gradient(115deg, transparent 55%, rgba(59,17,30,.42));
-  pointer-events: none;
-}
-
-@keyframes reveal {
-  from { opacity: 0; transform: scale(1.12); }
-  to { opacity: 1; transform: scale(1.04); }
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 30px 5%;
-  border-bottom: 1px solid rgba(255,255,255,.18);
-}
-
-.logo {
-  font-family: "Italiana", serif;
-  font-size: clamp(18px, 2vw, 27px);
-  letter-spacing: .025em;
-  white-space: nowrap;
-}
-
-.logo em {
-  font-style: normal;
-  opacity: .72;
-}
-
-.nav {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: clamp(14px, 2.3vw, 38px);
-}
-
-.nav a {
-  font-size: 10px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  transition: opacity .25s;
-}
-
-.nav a:hover {
-  opacity: .55;
-}
-
-.hero-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 100px 5% 130px;
-}
-
-.eyebrow {
-  font-size: 10px;
-  letter-spacing: .4em;
-  text-transform: uppercase;
-  color: #d4c5bb;
-}
-
-.hero h1 {
-  font-family: "Italiana", serif;
-  font-weight: 400;
-  font-size: clamp(48px, 8vw, 145px);
-  line-height: 1;
-  letter-spacing: -.045em;
-  margin: 34px 0;
-}
-
-.hero h1 em {
-  font-weight: 400;
-  color: #e4d6ca;
-}
-
-.hero-line {
-  width: 56px;
-  height: 1px;
-  background: var(--paper);
-  margin: 12px auto 32px;
-}
-
-.hero-description {
-  font-size: 11px;
-  letter-spacing: .25em;
-  text-transform: uppercase;
-  line-height: 2.5;
-  color: #d2c4ba;
-}
-
-.scroll-cue {
-  position: absolute;
-  bottom: 35px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: #c3b6ae;
-}
-
-.scroll-cue span {
-  display: block;
-  text-align: center;
-  font-size: 23px;
-  margin-top: 8px;
-}
-
-.editorial {
-  background: var(--paper);
-  color: var(--ink);
-  padding: 95px 7% 110px;
-}
-
-.section-top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #aaa096;
-}
-
-.section-top span {
-  font-size: 10px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-}
-
-.section-top h2 {
-  font-family: "Italiana", serif;
-  font-size: clamp(36px, 6vw, 80px);
-  font-weight: 400;
-  margin: 0;
-}
-
-.feature {
-  display: grid;
-  grid-template-columns: 1.1fr .9fr;
-  gap: 7%;
-  align-items: center;
-  padding: 70px 0;
-  border-bottom: 1px solid #c7bcb0;
-}
-
-.feature-image {
-  width: 100%;
-  height: 490px;
-  object-fit: cover;
-  filter: grayscale(55%);
-}
-
-.feature-category {
-  font-size: 10px;
-  letter-spacing: .25em;
-  text-transform: uppercase;
-  color: #775d5c;
-}
-
-.feature h3 {
-  font-family: "Italiana", serif;
-  font-size: clamp(40px, 5vw, 76px);
-  font-weight: 400;
-  line-height: 1.08;
-  margin: 26px 0;
-}
-
-.feature p {
-  max-width: 430px;
-  font-size: 14px;
-  line-height: 1.9;
-  color: #645b56;
-}
-
-.read-link {
-  display: inline-block;
-  margin-top: 30px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--ink);
-  font-size: 11px;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-}
-
-.archive {
-  padding: 80px 7% 110px;
-  background: #1b1014;
-}
-
-.archive h2 {
-  font-family: "Italiana", serif;
-  font-size: clamp(40px, 6vw, 78px);
-  font-weight: 400;
-  margin: 0 0 45px;
-}
-
-.archive-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 27px 0;
-  border-top: 1px solid rgba(255,255,255,.2);
-  transition: padding .3s, color .3s;
-}
-
-.archive-item:last-child {
-  border-bottom: 1px solid rgba(255,255,255,.2);
-}
-
-.archive-item:hover {
-  padding-left: 12px;
-  color: #b99a9d;
-}
-
-.archive-item span {
-  font-size: 10px;
-  letter-spacing: .15em;
-  color: #a99b96;
-}
-
-.archive-item strong {
-  flex: 1;
-  font-family: "Italiana", serif;
-  font-size: clamp(23px, 3vw, 40px);
-  font-weight: 400;
-}
-
-.footer {
-  padding: 35px 7%;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  background: #100b0d;
-  color: #b4a8a1;
-  font-size: 10px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-}
-
-@media (max-width: 800px) {
-  .header {
-    flex-direction: column;
-    padding: 25px 5%;
-  }
-
-  .nav {
-    justify-content: center;
-  }
-
-  .nav a {
-    font-size: 9px;
-  }
-
-  .hero h1 {
-    font-size: clamp(38px, 9vw, 75px);
-    overflow-wrap: anywhere;
-  }
-
-  .hero-description {
-    font-size: 9px;
-    letter-spacing: .12em;
-  }
-
-  .editorial {
-    padding: 65px 6%;
-  }
-
-  .feature {
-    grid-template-columns: 1fr;
-    gap: 30px;
-    padding: 40px 0;
-  }
-
-  .feature-image {
-    height: 350px;
-  }
-
-  .archive {
-    padding: 65px 6%;
-  }
-
-  .archive-item {
-    flex-wrap: wrap;
-  }
-
-  .archive-item strong {
-    flex-basis: 70%;
-  }
-
-  .footer {
-    flex-direction: column;
-    align-items: center;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-}
+:root{--black:#100b0d;--cherry:#3b111e;--paper:#eae3d8;--ink:#241e1d;--muted:#a79b92}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--black);color:var(--paper);font-family:"DM Sans",sans-serif}a{color:inherit;text-decoration:none}button{font:inherit}
+/* Original hero: image, positioning and animation retained */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;overflow:hidden;isolation:isolate;background:#100b0d}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,rgba(0,0,0,.5),transparent 65%),url("https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=2000&q=85") center/cover no-repeat;filter:grayscale(75%) brightness(.43);transform:scale(1.04);animation:reveal 2s ease both}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,#100b0d 0%,transparent 40%),linear-gradient(115deg,transparent 55%,rgba(59,17,30,.42));pointer-events:none}
+@keyframes reveal{from{opacity:0;transform:scale(1.12)}to{opacity:1;transform:scale(1.04)}}
+.header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:30px 5%;border-bottom:1px solid rgba(255,255,255,.18)}
+.logo{font-family:"Italiana",serif;font-size:clamp(18px,2vw,27px);letter-spacing:.025em;white-space:nowrap}.logo em{font-style:normal;opacity:.72}
+.nav{display:flex;align-items:center;flex-wrap:wrap;gap:clamp(14px,2.3vw,38px)}.nav a{font-size:10px;letter-spacing:.18em;text-transform:uppercase;transition:opacity .25s}.nav a:hover{opacity:.55}
+.hero-content{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:100px 5% 130px}.eyebrow{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:#d4c5bb}
+.hero h1{font-family:"Italiana",serif;font-weight:400;font-size:clamp(48px,8vw,145px);line-height:1;letter-spacing:-.045em;margin:34px 0}.hero h1 em{font-weight:400;color:#e4d6ca}
+.hero-line{width:56px;height:1px;background:var(--paper);margin:12px auto 32px}.hero-description{font-size:11px;letter-spacing:.25em;text-transform:uppercase;line-height:2.5;color:#d2c4ba}
+.scroll-cue{position:absolute;bottom:35px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#c3b6ae}.scroll-cue span{display:block;text-align:center;font-size:23px;margin-top:8px}
+/* Living editorial */
+.editorial{background:var(--paper);color:var(--ink);padding:95px 7% 110px}.section-top{display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:1px solid #aaa096}.section-top span{font-size:10px;letter-spacing:.2em;text-transform:uppercase}.section-top h2{font-family:"Italiana",serif;font-size:clamp(36px,6vw,80px);font-weight:400;margin:0}
+.feature{display:grid;grid-template-columns:1.06fr .94fr;gap:7%;align-items:center;padding:70px 0 18px}.feature-art{position:relative;min-height:510px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#39202a}.feature-art img{display:block;width:100%;height:510px;object-fit:cover;filter:grayscale(25%);transition:transform .7s}.feature-art:hover img{transform:scale(1.035)}.feature-art::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,8,12,.32),transparent 50%);pointer-events:none}.feature-art .art-index{position:absolute;bottom:20px;left:24px;z-index:1;font-size:10px;letter-spacing:.18em;color:#fff}
+.feature-meta{display:flex;align-items:center;gap:14px;color:#775d5c;font-size:10px;letter-spacing:.17em;text-transform:uppercase}.feature-meta .rule{width:28px;height:1px;background:#a78c84}.feature h3{font-family:"Italiana",serif;font-size:clamp(43px,5.5vw,82px);font-weight:400;line-height:1.05;margin:30px 0}.feature p{max-width:450px;font-size:14px;line-height:2;color:#645b56}.read-link{display:inline-block;margin-top:28px;padding-bottom:8px;border-bottom:1px solid var(--ink);font-size:11px;letter-spacing:.16em;text-transform:uppercase}.feature-empty{padding:65px 0 0;color:#786e68;font-size:13px;line-height:1.8}
+/* Chronological, visually expressive archive */
+.archive{padding:95px 7% 115px;background:#1b1014}.archive-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:44px}.archive h2{font-family:"Italiana",serif;font-size:clamp(45px,7vw,95px);font-weight:400;margin:0}.archive-intro{max-width:310px;color:#b8aaa5;font-size:12px;line-height:1.9}.archive-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:22px}.archive-card{grid-column:span 4;display:block;min-width:0}.archive-card:nth-child(5n+2){grid-column:span 5}.archive-card:nth-child(5n+3){grid-column:span 3}.archive-card:nth-child(5n+4){grid-column:span 7}.archive-card:nth-child(5n+5){grid-column:span 5}.archive-art{height:clamp(230px,29vw,390px);overflow:hidden;position:relative;background:var(--accent,#45303a);display:flex;align-items:center;justify-content:center}.archive-card:nth-child(5n+2) .archive-art{height:clamp(260px,35vw,450px)}.archive-card:nth-child(5n+3) .archive-art{height:clamp(220px,25vw,340px)}.archive-art img{width:100%;height:100%;object-fit:cover;transition:transform .7s,filter .5s}.archive-card:hover img{transform:scale(1.06)}.archive-art::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.2),transparent 40%);pointer-events:none}.archive-no-image{font-family:"Italiana",serif;font-size:clamp(30px,4vw,65px);color:rgba(255,255,255,.72);padding:30px;text-align:center}.archive-number{position:absolute;top:17px;left:18px;color:#fff;font-size:10px;letter-spacing:.2em;z-index:1}.archive-details{display:flex;justify-content:space-between;align-items:start;gap:15px;padding:19px 0 30px;border-top:1px solid rgba(255,255,255,.25);margin-top:15px}.archive-title{font-family:"Italiana",serif;font-size:clamp(25px,2.7vw,38px);font-weight:400;line-height:1.15}.archive-date{font-size:10px;letter-spacing:.08em;color:#b8aaa5;white-space:nowrap;padding-top:7px}.archive-empty{padding:60px 0;border-top:1px solid rgba(255,255,255,.2);color:#b8aaa5;font-size:13px}
+.about{padding:85px 7%;background:#24131a;border-top:1px solid rgba(255,255,255,.13);display:grid;grid-template-columns:1fr 2fr;gap:7%}.about-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#b7a6a0}.about p{font-family:"Italiana",serif;font-size:clamp(27px,3.8vw,52px);line-height:1.3;margin:0;max-width:800px}.about small{display:block;margin-top:26px;font-size:11px;line-height:1.8;color:#b7a6a0;letter-spacing:.04em}
+.footer{padding:35px 7%;display:flex;justify-content:space-between;gap:20px;background:#100b0d;color:#b4a8a1;font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+/* Article reading overlay: until CMS routing is added */
+.reader{position:fixed;inset:0;z-index:20;overflow:auto;background:var(--paper);color:var(--ink);padding:30px 6% 100px}.reader[hidden]{display:none}.reader-top{display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid #bcb0a5;padding-bottom:22px}.reader-top span{font-family:"Italiana",serif;font-size:24px}.reader-close{border:0;background:none;color:var(--ink);cursor:pointer;text-transform:uppercase;letter-spacing:.15em;font-size:11px;padding:12px}.reader-inner{max-width:780px;margin:80px auto 0}.reader-date{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#796e68}.reader h2{font-family:"Italiana",serif;font-size:clamp(48px,8vw,100px);font-weight:400;line-height:1.08;margin:24px 0 45px}.reader-cover{display:block;width:100%;max-height:570px;object-fit:cover;margin-bottom:55px}.reader-body{font-size:16px;line-height:2;color:#39302e;white-space:pre-line}.reader-body p{margin:0 0 1.5em}.reader-body img{max-width:100%;height:auto}.reader-back{margin-top:55px;border:0;border-bottom:1px solid currentColor;background:none;padding:0 0 8px;color:var(--ink);cursor:pointer;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+@media(max-width:800px){.header{flex-direction:column;padding:25px 5%}.nav{justify-content:center}.nav a{font-size:9px}.hero h1{font-size:clamp(38px,9vw,75px);overflow-wrap:anywhere}.hero-description{font-size:9px;letter-spacing:.12em}.editorial{padding:65px 6%}.feature{grid-template-columns:1fr;gap:35px;padding:40px 0 15px}.feature-art,.feature-art img{height:350px;min-height:350px}.archive{padding:65px 6%}.archive-heading{align-items:start;flex-direction:column}.archive-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.archive-card,.archive-card:nth-child(n){grid-column:span 1}.archive-card:nth-child(3n+1){grid-column:span 2}.archive-art,.archive-card:nth-child(n) .archive-art{height:280px}.archive-card:nth-child(3n+1) .archive-art{height:350px}.archive-details{flex-direction:column;gap:5px}.archive-date{padding:0}.about{grid-template-columns:1fr;gap:25px}.footer{flex-direction:column;align-items:center}.reader-inner{margin:45px auto 0}}
+@media(max-width:480px){.archive-art,.archive-card:nth-child(n) .archive-art{height:205px}.archive-card:nth-child(3n+1) .archive-art{height:285px}.archive-title{font-size:26px}.feature-art,.feature-art img{height:310px;min-height:310px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
-
 <body>
-
 <section class="hero" id="top">
-
-  <header class="header">
-    <a href="#top" class="logo">
-      TOMREYES.<em>JOURNAL</em>
-    </a>
-
-    <nav class="nav" aria-label="Ana menü">
-      <a href="#editorial">Yazılar</a>
-      <a href="#archive">Arşiv</a>
-      <a href="#about">Hakkında</a>
-    </nav>
-  </header>
-
-  <div class="hero-content">
-    <div class="eyebrow">Independent Editorial</div>
-
-    <h1>TOMREYES.<em>JOURNAL</em></h1>
-
-    <div class="hero-line"></div>
-
-    <div class="hero-description">
-      Sanat / Düşünce / Sinema / Edebiyat / Yaşam
-    </div>
-  </div>
-
-  <a href="#editorial" class="scroll-cue">
-    Explore
-    <span>↓</span>
-  </a>
-
+<header class="header"><a href="#top" class="logo">TOMREYES</a><nav class="nav" aria-label="Ana menü"><a href="mailto:tomreyeda@gmail.com?subject=TOMREYES.JOURNAL%20%E2%80%94%20%C4%B0leti%C5%9Fim">İletişim</a></nav></header>
+<div class="hero-content"><div class="eyebrow">An Open Canvas</div><h1>TOMREYES.<em>JOURNAL</em></h1><div class="hero-line"></div><div class="hero-description">You can be anything, once you've learned to be yourself.</div></div>
+<a href="#editorial" class="scroll-cue">Explore<span>↓</span></a>
 </section>
-
 <main>
-
-  <section class="editorial" id="editorial">
-
-    <div class="section-top">
-      <span>Selected Stories / 001</span>
-      <h2>Journal</h2>
-    </div>
-
-    <article class="feature">
-      <img
-        class="feature-image"
-        src="https://images.unsplash.com/photo-1545987796-200677ee1011?auto=format&fit=crop&w=1200&q=85"
-        alt="Sanatsal editoryal görsel"
-      >
-
-      <div>
-        <div class="feature-category">
-          Sanat / Deneme
-        </div>
-
-        <h3>Görmenin Başka Bir Biçimi</h3>
-
-        <p>
-          Sanat yalnızca gördüklerimizle değil,
-          görmeyi seçtiklerimizle de ilgilidir.
-          Bazen bir görüntü, uzun bir düşüncenin
-          başlangıcı olabilir.
-        </p>
-
-        <span class="read-link">
-          Yakında
-        </span>
-      </div>
-    </article>
-
-  </section>
-
-  <section class="archive" id="archive">
-    <h2>Archive.</h2>
-
-    <div class="archive-item">
-      <span>01 / SANAT</span>
-      <strong>Görmenin Başka Bir Biçimi</strong>
-      <span>YAKINDA</span>
-    </div>
-
-    <div class="archive-item">
-      <span>02 / DÜŞÜNCE</span>
-      <strong>İnsan ve Özgür İrade</strong>
-      <span>YAKINDA</span>
-    </div>
-
-    <div class="archive-item">
-      <span>03 / SİNEMA</span>
-      <strong>Hikâyelerin Ardında</strong>
-      <span>YAKINDA</span>
-    </div>
-
-  </section>
-
+<section class="editorial" id="editorial"><div class="section-top" aria-hidden="true"></div><div id="latest-entry"></div></section>
+<section class="archive" id="archive"><div class="archive-heading"><h2>Archive.</h2></div><div class="archive-grid" id="archive-grid"></div></section>
+<section class="about" id="about"><span class="about-label">Çıkış</span><div><p>Bir konu etrafında değil, bir zihin etrafında şekillenir.</p><small>TOMREYES.JOURNAL — Bir dijital düşünce sergisi. Görsel kimliği tutarlı, düşüncesi özgür.</small></div></section>
 </main>
-
-<footer class="footer" id="about">
-  <span>TOMREYES.JOURNAL</span>
-  <span>Independent Art & Thought</span>
-  <span>© 2026</span>
-</footer>
-
+<footer class="footer"><span>TOMREYES.JOURNAL</span><span>An Open Canvas</span><span>© 2026</span></footer>
+<div class="reader" id="reader" hidden role="dialog" aria-modal="true" aria-labelledby="reader-title"><div class="reader-top"><span>TOMREYES.JOURNAL</span><button class="reader-close" type="button" id="reader-close">✕ Kapat</button></div><article class="reader-inner" id="reader-content"></article></div>
+<script>
+/* DEMO ENTRIES — Replace with your own work. Future CMS can supply this data. */
+const entries = [
+  {id:'dusuncenin-esigi',date:'2026-11-07',title:'Düşüncenin Eşiğinde',excerpt:'Bazen bir görüntü, bir cümle ya da rastlantıyla karşılaşırsın. Asıl hikâye, onun zihninde açtığı yerdedir.',image:'https://images.unsplash.com/photo-1545987796-200677ee1011?auto=format&fit=crop&w=1400&q=85',color:'#493039',body:['Bu alan bir örnek yazıdır. Buraya kendi düşüncelerini, kendi kelimelerinle yerleştireceğiz.','Bir filmden, bir resimden ya da sokakta rastladığın küçük bir ayrıntıdan yola çıkabilirsin. Konunun nereye varacağına yalnızca düşüncen karar verir.']},
+  {id:'bir-baska-bakis',date:'2026-10-24',title:'Bir Başka Bakış',excerpt:'Gördüğümüz şey ile ona yüklediğimiz anlam her zaman aynı değildir.',image:'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1100&q=85',color:'#a98559',body:['Bu da arşiv düzenini göstermek için eklenmiş örnek bir metindir.']},
+  {id:'sessizligin-izleri',date:'2026-10-11',title:'Sessizliğin İzleri',excerpt:'Bazı düşünceler, kelimelerden önce belirir.',image:'https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1100&q=85',color:'#31576a',body:['Bu da arşiv düzenini göstermek için eklenmiş örnek bir metindir.']},
+  {id:'arada-kalan',date:'2026-09-28',title:'Arada Kalan',excerpt:'Bir düşünceyi tamamlamak zorunda mıyız?',image:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1100&q=85',color:'#65614a',body:['Bu da arşiv düzenini göstermek için eklenmiş örnek bir metindir.']}
+];
+const ordered=[...entries].sort((a,b)=>b.date.localeCompare(a.date));
+const formatDate=date=>new Intl.DateTimeFormat('tr-TR',{day:'2-digit',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z'));
+const escapeHTML=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const safeImage=url=>/^https:\/\//i.test(url||'')?url:'';
+const latest=document.getElementById('latest-entry');const archive=document.getElementById('archive-grid');
+if(ordered.length){
+  const entry=ordered[0];
+  latest.innerHTML=`<article class="feature"><a class="feature-art" href="#read/${encodeURIComponent(entry.id)}" aria-label="${escapeHTML(entry.title)} yazısını oku">${safeImage(entry.image)?`<img src="${escapeHTML(safeImage(entry.image))}" alt="${escapeHTML(entry.title)} için kapak görseli">`:''}<span class="art-index">/001</span></a><div><div class="feature-meta"><span>/001</span><span class="rule"></span><time datetime="${entry.date}">${formatDate(entry.date)}</time></div><h3>${escapeHTML(entry.title)}</h3><p>${escapeHTML(entry.excerpt)}</p><a class="read-link" href="#read/${encodeURIComponent(entry.id)}">Yazıyı oku ↗</a></div></article>`;
+  archive.innerHTML=ordered.map((item,i)=>`<a class="archive-card" href="#read/${encodeURIComponent(item.id)}" style="--accent:${/^#[0-9a-fA-F]{6}$/.test(item.color)?item.color:'#45303a'}"><div class="archive-art">${safeImage(item.image)?`<img src="${escapeHTML(safeImage(item.image))}" loading="lazy" alt="${escapeHTML(item.title)} için kapak görseli">`:`<span class="archive-no-image">${escapeHTML(item.title)}</span>`}<span class="archive-number">${String(i+1).padStart(3,'0')} / JOURNAL</span></div><div class="archive-details"><strong class="archive-title">${escapeHTML(item.title)}</strong><time class="archive-date" datetime="${item.date}">${formatDate(item.date)}</time></div></a>`).join('');
+}else{latest.innerHTML='<p class="feature-empty">İlk düşünce burada sergilenecek.</p>';archive.innerHTML='<p class="archive-empty">Arşiv henüz boş. İlk yazıyla birlikte oluşmaya başlayacak.</p>'}
+const reader=document.getElementById('reader');const readerContent=document.getElementById('reader-content');let previousHash='#editorial';
+function updateReader(){const match=location.hash.match(/^#read\/(.+)$/);if(!match){reader.hidden=true;document.body.style.overflow='';return}let id;try{id=decodeURIComponent(match[1])}catch{return}const item=ordered.find(entry=>entry.id===id);if(!item){reader.hidden=true;document.body.style.overflow='';return}readerContent.innerHTML=`<div class="reader-date">${formatDate(item.date)} / Journal</div><h2 id="reader-title">${escapeHTML(item.title)}</h2>${safeImage(item.image)?`<img class="reader-cover" src="${escapeHTML(safeImage(item.image))}" alt="${escapeHTML(item.title)} için kapak görseli">`:''}<div class="reader-body">${item.body.map(paragraph=>`<p>${escapeHTML(paragraph)}</p>`).join('')}</div><button class="reader-back" type="button">← Arşive dön</button>`;reader.hidden=false;document.body.style.overflow='hidden';reader.scrollTop=0;readerContent.querySelector('.reader-back').addEventListener('click',closeReader)}
+function closeReader(){location.hash=previousHash&&previousHash.startsWith('#read/')?'#archive':previousHash||'#archive'}
+document.addEventListener('click',event=>{const link=event.target.closest('a[href^="#read/"]');if(link&&!location.hash.startsWith('#read/'))previousHash=link.closest('#archive')?'#archive':'#editorial'});
+document.getElementById('reader-close').addEventListener('click',closeReader);document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!reader.hidden)closeReader()});window.addEventListener('hashchange',updateReader);updateReader();
+</script>
 </body>
 </html>
