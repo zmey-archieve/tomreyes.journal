@@ -1,89 +1,308 @@
-<!doctype html>
-<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TOMREYES — Görsel Editör</title>
+
+const SITE_ORIGIN = 'https://tomreyes-journal.pages.dev';
+const CALLBACK_URL = 'https://tomreyes-journal-auth.tomreyeda.workers.dev/callback';
+const encoder = new TextEncoder();
+
+function html(body, status = 200) {
+  return new Response(body, {
+    status,
+    headers: {
+      'content-type': 'text/html; charset=utf-8',
+      'cache-control': 'no-store',
+      'content-security-policy':
+        "default-src 'none'; script-src 'unsafe-inline'; " +
+        "style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'"
+    }
+  });
+}
+
+function page(script, message) {
+  return html(`<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>TOMREYES — GitHub Login</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#141013;color:#f1e9df;font:13px Arial,sans-serif}button,input,textarea{font:inherit}header{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #44343b;gap:12px}header strong{letter-spacing:.15em}header small{color:#b5a4aa}button{background:#eee5dc;color:#20151a;border:0;padding:10px 13px;cursor:pointer;border-radius:4px}button.secondary{background:#33252d;color:#eee5dc}main{display:grid;grid-template-columns:330px minmax(0,1fr);height:calc(100vh - 62px)}aside{padding:22px;overflow:auto;border-right:1px solid #44343b}h2{font:28px Georgia,serif;font-weight:400;margin:0 0 8px}p{line-height:1.55;color:#c4b7b9}label{display:block;margin:17px 0 6px;color:#d5c8c7;font-size:12px}input,textarea{width:100%;background:#241b21;color:#fff;border:1px solid #57454d;padding:10px;border-radius:4px}textarea{min-height:80px;resize:vertical}input[type=color]{height:42px;padding:4px}hr{border:0;border-top:1px solid #44343b;margin:25px 0}.tip{font-size:11px;color:#a99b9d}section.preview{background:#0d0b0d;padding:14px;min-width:0}iframe{display:block;width:100%;height:100%;border:0;background:white}.buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.buttons button{flex:1}.status{font-size:12px;color:#d7c7bb;line-height:1.6;white-space:pre-wrap}.selected{outline:2px solid #a85f75!important;outline-offset:3px!important}@media(max-width:750px){main{grid-template-columns:1fr;height:auto}aside{max-height:none}section.preview{height:70vh}}
-.tabs{display:flex;gap:5px;margin:18px 0}.tab{flex:1;background:#30242b;color:#e9ddd6;padding:10px 5px}.tab.active{background:#eae3d8;color:#21161a}#article-panel[hidden],#fields[hidden]{display:none}.entry-list{display:grid;gap:7px;margin:15px 0}.entry-item{display:block;width:100%;text-align:left;background:#2b2027;color:#e9ddd6}.entry-item.active{outline:1px solid #d7a4b1}.danger{background:#6b2d40;color:white}.rowbtn{display:flex;gap:8px;margin-top:14px}.rowbtn button{flex:1}.hint{font-size:11px;color:#b7a7a9}.empty-note{font-size:12px;color:#b7a7a9;line-height:1.6}</style></head><body>
-<header><div><strong>TOMREYES / EDITOR</strong> <small>Görsel düzenleme</small></div><div><button class="secondary" id="reset">Taslağı sıfırla</button> <button id="export">HTML indir</button></div></header>
-<main><aside><h2>Theme editor.</h2><p>Sağdaki sitede bir metne tıkla veya aşağıdaki alanları düzenle.</p><div class="tabs"><button class="tab active" data-tab="page">Sayfa</button><button class="tab" data-tab="articles">Yazılar</button><button class="tab" data-tab="design">Tasarım</button></div><div id="fields"></div><div id="article-panel" hidden></div><hr><div class="buttons"><button class="secondary" id="save">Taslağı kaydet</button><button class="secondary" id="reload">Önizlemeyi yenile</button></div><p class="tip">Taslak yalnızca bu tarayıcıda tutulur. HTML indir, düzenlenmiş site dosyasını oluşturur; canlı siteyi değiştirmez.</p><div class="status" id="status">Site yükleniyor…</div></aside><section class="preview"><iframe id="preview" title="TOMREYES.JOURNAL önizleme" sandbox="allow-same-origin"></iframe></section></main>
-<script>
-const KEY='tomreyes-editor-draft-v4-images';
-const LEGACY_KEYS=['tomreyes-editor-draft-v3','tomreyes-editor-draft-v2'];
-const config=[
-{id:'eyebrow',title:'Açılış üst yazısı',type:'text',selector:'.eyebrow'},
-{id:'headline',title:'Ana başlık',type:'text',selector:'.hero h1',note:'Bu alanı değiştirirsen ana başlığın italik parçası düz metne dönüşür.'},
-{id:'subtitle',title:'Açılış alt yazısı',type:'textarea',selector:'.hero-description'},
-{id:'archive',title:'Arşiv başlığı',type:'text',selector:'.archive h2'},
-{id:'aboutlabel',title:'Son bölüm etiketi',type:'text',selector:'.about-label'},
-{id:'about',title:'Son bölüm metni',type:'textarea',selector:'.about p'},
-{id:'aboutsmall',title:'Son bölüm küçük metni',type:'textarea',selector:'.about small'},
-{id:'footer',title:'Alt bilgi orta yazı',type:'text',selector:'.footer span:nth-child(2)'},
-{id:'black',title:'Ana arka plan rengi',type:'color',css:'--black'},
-{id:'paper',title:'Kâğıt rengi',type:'color',css:'--paper'},
-{id:'cherry',title:'Vurgu rengi',type:'color',css:'--cherry'},
-{id:'heroimage',title:'Açılış görseli',type:'image',special:'heroimage'}
-];
-const frame=document.getElementById('preview'),fields=document.getElementById('fields'),status=document.getElementById('status');
-let source='',working='',state={},lastSelected=null,entries=[],selectedEntry=-1,activeTab='page';
-const say=t=>status.textContent=t;
-const parse=s=>new DOMParser().parseFromString(s,'text/html');
-const serialize=d=>'<!DOCTYPE html>\n'+d.documentElement.outerHTML;
-function originalValue(doc,c){if(c.css){const css=doc.querySelector('style')?.textContent||'';return css.match(new RegExp(c.css.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*:\\s*(#[0-9a-fA-F]{6})'))?.[1]||'#100b0d'}if(c.special)return (doc.querySelector('style')?.textContent||'').match(/url\("([^"\n]+)"\) center\/cover/)?.[1]||'';return doc.querySelector(c.selector)?.textContent?.trim()||''}
-function isImageSource(value){return /^https:\/\//i.test(value||'')||/^data:image\/(?:png|jpeg|webp);base64,/i.test(value||'')}
-async function optimizeImage(file){
- if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('JPG, PNG veya WebP seçmelisin.');
- if(file.size>15*1024*1024)throw Error('Görsel 15 MB üzerinde olamaz.');
- const blobUrl=URL.createObjectURL(file);
- try{
-  const image=new Image();image.src=blobUrl;await image.decode();
-  const scale=Math.min(1,1600/Math.max(image.naturalWidth,image.naturalHeight));
-  const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
-  const ctx=canvas.getContext('2d');if(!ctx)throw Error('Görsel işlenemedi.');
-  ctx.drawImage(image,0,0,canvas.width,canvas.height);
-  // JPEG conversion keeps the downloadable HTML compact; transparency uses PNG.
-  const format=file.type==='image/png'?'image/png':'image/jpeg';
-  let result=canvas.toDataURL(format,.78);
-  if(result.length>2_000_000){result=canvas.toDataURL('image/jpeg',.65)}
-  if(result.length>2_500_000)throw Error('Görsel çok büyük. Daha küçük bir görsel dene.');
+body {
+  background: #100b0d;
+  color: #eae3d8;
+  font: 15px system-ui, sans-serif;
+  display: grid;
+  place-items: center;
+  min-height: 90vh;
+}
+</style>
+</head>
+<body>
+<p>${message}</p>
+<script>${script}</script>
+</body>
+</html>`);
+}
+
+function b64url(bytes) {
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
+}
+
+async function sign(value, secret) {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+
+  return b64url(new Uint8Array(
+    await crypto.subtle.sign(
+      'HMAC',
+      key,
+      encoder.encode(value)
+    )
+  ));
+}
+
+function equal(a, b) {
+  const x = encoder.encode(a);
+  const y = encoder.encode(b);
+
+  if (x.length !== y.length) return false;
+
+  let diff = 0;
+  for (let i = 0; i < x.length; i++) {
+    diff |= x[i] ^ y[i];
+  }
+  return diff === 0;
+}
+
+function cookieValue(request, name) {
+  return (request.headers.get('Cookie') || '')
+    .split(';')
+    .map(v => v.trim())
+    .find(v => v.startsWith(name + '='))
+    ?.slice(name.length + 1);
+}
+
+function handshake() {
+  return page(`
+    const origin = ${JSON.stringify(SITE_ORIGIN)};
+
+    if (!window.opener) {
+      document.body.textContent =
+        'Bu sayfayı Journal yönetim panelinden açmalısın.';
+    } else {
+      const listener = event => {
+        if (
+          event.origin !== origin ||
+          event.source !== window.opener
+        ) return;
+
+        if (
+          event.data === 'authorizing:github' ||
+          event.data === 'authorization:github'
+        ) {
+          window.removeEventListener('message', listener);
+          window.location.replace('/start');
+        }
+      };
+
+      window.addEventListener('message', listener);
+
+      window.opener.postMessage(
+        'authorizing:github',
+        origin
+      );
+    }
+  `, 'GitHub bağlantısı hazırlanıyor...');
+}
+
+async function start(env) {
+  const nonce = b64url(
+    crypto.getRandomValues(new Uint8Array(32))
+  );
+
+  const timestamp = Date.now();
+  const payload = `${nonce}.${timestamp}`;
+  const signature = await sign(
+    payload,
+    env.OAUTH_STATE_SECRET
+  );
+
+  const state = `${payload}.${signature}`;
+
+  const github = new URL(
+    'https://github.com/login/oauth/authorize'
+  );
+
+  github.searchParams.set(
+    'client_id',
+    env.GITHUB_CLIENT_ID
+  );
+
+  github.searchParams.set(
+    'redirect_uri',
+    CALLBACK_URL
+  );
+
+  github.searchParams.set('scope', 'repo');
+  github.searchParams.set('state', state);
+
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: github.toString(),
+      'Set-Cookie':
+        `tomreyes_oauth=${encodeURIComponent(nonce)}; ` +
+        'HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=600',
+      'Cache-Control': 'no-store'
+    }
+  });
+}
+
+async function callback(request, env) {
+  const url = new URL(request.url);
+  const state = url.searchParams.get('state') || '';
+  const code = url.searchParams.get('code');
+  const parts = state.split('.');
+
+  const nonce = cookieValue(
+    request,
+    'tomreyes_oauth'
+  );
+
+  const expireCookie =
+    'tomreyes_oauth=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0';
+
+  if (url.searchParams.has('error')) {
+    return html(
+      'GitHub erişimi reddedildi. Tekrar deneyebilirsin.',
+      400
+    );
+  }
+
+  if (
+    !code ||
+    parts.length !== 3 ||
+    !nonce ||
+    decodeURIComponent(nonce) !== parts[0] ||
+    !/^\d+$/.test(parts[1]) ||
+    Math.abs(Date.now() - Number(parts[1])) > 600000
+  ) {
+    return html(
+      'Giriş doğrulanamadı. Yönetim panelinden tekrar dene.',
+      400
+    );
+  }
+
+  const expected = await sign(
+    `${parts[0]}.${parts[1]}`,
+    env.OAUTH_STATE_SECRET
+  );
+
+  if (!equal(expected, parts[2])) {
+    return html(
+      'Giriş doğrulaması başarısız.',
+      403
+    );
+  }
+
+  const response = await fetch(
+    'https://github.com/login/oauth/access_token',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'User-Agent': 'tomreyes-journal-auth'
+      },
+      body: JSON.stringify({
+        client_id: env.GITHUB_CLIENT_ID,
+        client_secret: env.GITHUB_CLIENT_SECRET,
+        code,
+        redirect_uri: CALLBACK_URL
+      })
+    }
+  );
+
+  if (!response.ok) {
+    return html(
+      'GitHub bağlantısı başarısız oldu.',
+      502
+    );
+  }
+
+  const data = await response.json();
+
+  if (!data.access_token || data.error) {
+    return html(
+      'GitHub erişim anahtarı alınamadı.',
+      400
+    );
+  }
+
+  const payload = JSON.stringify({
+    token: data.access_token,
+    provider: 'github'
+  });
+
+  const result = page(`
+    const origin = ${JSON.stringify(SITE_ORIGIN)};
+
+    if (window.opener) {
+      window.opener.postMessage(
+        'authorization:github:success:' +
+          ${JSON.stringify(payload)},
+        origin
+      );
+
+      setTimeout(() => window.close(), 400);
+    } else {
+      document.body.textContent =
+        'Giriş penceresi bulunamadı.';
+    }
+  `, 'Giriş başarılı. Panele dönülüyor...');
+
+  result.headers.append(
+    'Set-Cookie',
+    expireCookie
+  );
+
   return result;
- }finally{URL.revokeObjectURL(blobUrl)}
 }
-function addImageControls(container,input,id){
- const row=document.createElement('div');row.className='rowbtn';
- const choose=document.createElement('button');choose.type='button';choose.className='secondary';choose.textContent='📁 Bilgisayardan seç';
- const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Görseli kaldır';
- const picker=document.createElement('input');picker.type='file';picker.accept='image/jpeg,image/png,image/webp';picker.hidden=true;
- choose.onclick=()=>picker.click();
- picker.onchange=async()=>{const file=picker.files?.[0];if(!file)return;try{say('Görsel hazırlanıyor…');input.value=await optimizeImage(file);input.dispatchEvent(new Event('input',{bubbles:true}));say('Görsel önizlemeye eklendi. Yayımlamak için henüz HTML aktarımı gerekiyor.')}catch(e){say('Görsel yüklenemedi: '+e.message)}picker.value=''};
- remove.onclick=()=>{input.value='';input.dispatchEvent(new Event('input',{bubbles:true}))};
- row.append(choose,remove,picker);container.append(row);
- const note=document.createElement('p');note.className='tip';note.textContent='JPG, PNG veya WebP. Görsel HTML dosyasına gömülür. Otomatik yayımlama henüz bağlı değil.';container.append(note);
-}
-function makeFields(){const doc=parse(source);fields.replaceChildren();for(const c of config){if(activeTab==='page'&&(c.css||c.special))continue;if(activeTab==='design'&&!(c.css||c.special))continue;const label=document.createElement('label');label.textContent=c.title;label.htmlFor=c.id;fields.append(label);const el=document.createElement(c.type==='textarea'?'textarea':'input');if(c.type!=='textarea')el.type=c.type==='color'?'color':'text';el.id=c.id;el.value=state[c.id]??originalValue(doc,c);state[c.id]=el.value;el.addEventListener('input',()=>{state[c.id]=el.value;render(false)});fields.append(el);if(c.type==='image')addImageControls(fields,el,c.id);if(c.note){const p=document.createElement('p');p.className='tip';p.textContent=c.note;fields.append(p)}}}
-function build(){const doc=parse(source);let css=doc.querySelector('style')?.textContent||'';for(const c of config){const value=state[c.id];if(value===undefined)continue;if(c.css){const escaped=c.css.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');css=css.replace(new RegExp('('+escaped+'\\s*:\\s*)#[0-9a-fA-F]{6}'),(_,prefix)=>prefix+value)}else if(c.special==='heroimage'){if(isImageSource(value))css=css.replace(/(\.hero::before\{[^}]*?url\(")[^"]+("\))/s,(_,a,b)=>a+value+b)}else{const target=doc.querySelector(c.selector);if(target){if(c.id==='headline' && value===originalValue(parse(source),c)){/* Orijinal italik yapıyı koru */}else target.textContent=value}}}
-if(doc.querySelector('style'))doc.querySelector('style').textContent=css;
-// Preserve the original website script and replace only the demo entries array.
-const scripts=[...doc.querySelectorAll('script')];const script=scripts.find(s=>s.textContent.includes('const entries ='));
-if(script){const raw=JSON.stringify(entries).replace(/</g,'\\u003c');script.textContent=script.textContent.replace(/const entries\s*=\s*\[[\s\S]*?\];(?=\s*const ordered)/,'const entries = '+raw+';');script.textContent=script.textContent.replace('const safeImage=url=>/^https:', 'const safeImage=url=>/^(?:data:image\\/(?:png|jpeg|webp);base64,|https:');}
-return serialize(doc)}
-function previewEntries(d){
- const latest=d.getElementById('latest-entry'),archive=d.getElementById('archive-grid');if(!latest||!archive)return;
- const ordered=[...entries].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
- const fmt=s=>{try{return new Intl.DateTimeFormat('tr-TR',{day:'2-digit',month:'long',year:'numeric'}).format(new Date(s+'T12:00:00Z'))}catch{return s}};
- const img=u=>isImageSource(u)?u:'';
- if(!ordered.length){latest.innerHTML='<p class="feature-empty">İlk düşünce burada sergilenecek.</p>';archive.innerHTML='<p class="archive-empty">Arşiv henüz boş.</p>';return}
- const a=ordered[0];latest.innerHTML='';const feature=d.createElement('article');feature.className='feature';
- const art=d.createElement('div');art.className='feature-art';if(img(a.image)){const im=d.createElement('img');im.src=a.image;im.alt=a.title;art.append(im)}const index=d.createElement('span');index.className='art-index';index.textContent='/001';art.append(index);
- const body=d.createElement('div'),meta=d.createElement('div');meta.className='feature-meta';meta.textContent='/001 — '+fmt(a.date);const h=d.createElement('h3');h.textContent=a.title;const ex=d.createElement('p');ex.textContent=a.excerpt||'';const link=d.createElement('span');link.className='read-link';link.textContent='Yazıyı oku ↗';body.append(meta,h,ex,link);feature.append(art,body);latest.append(feature);
- archive.innerHTML='';ordered.forEach((item,i)=>{const card=d.createElement('div');card.className='archive-card';const art=d.createElement('div');art.className='archive-art';art.style.setProperty('--accent',/^#[0-9a-f]{6}$/i.test(item.color||'')?item.color:'#45303a');if(img(item.image)){const im=d.createElement('img');im.src=item.image;im.alt=item.title;art.append(im)}else{const no=d.createElement('span');no.className='archive-no-image';no.textContent=item.title;art.append(no)}const num=d.createElement('span');num.className='archive-number';num.textContent=String(i+1).padStart(3,'0')+' / JOURNAL';art.append(num);const details=d.createElement('div');details.className='archive-details';const title=d.createElement('strong');title.className='archive-title';title.textContent=item.title;const date=d.createElement('time');date.className='archive-date';date.textContent=fmt(item.date);details.append(title,date);card.append(art,details);card.style.cursor='pointer';card.addEventListener('click',()=>{selectedEntry=entries.indexOf(item);switchTab('articles');renderArticleFields();say('Yazı seçildi: '+item.title)});archive.append(card)});
-}
-function render(preserveScroll=true){const old=frame.contentDocument;const y=preserveScroll?old?.documentElement?.scrollTop||old?.body?.scrollTop||0:0;working=build();frame.onload=()=>{const d=frame.contentDocument;if(!d)return;previewEntries(d);d.addEventListener('click',e=>{const a=e.target.closest('a');if(a)e.preventDefault();const c=config.find(c=>c.selector&&e.target.closest(c.selector));if(c){e.preventDefault();e.stopPropagation();switchTab('page');const field=document.getElementById(c.id);field?.focus();field?.scrollIntoView({block:'center',behavior:'smooth'});d.querySelectorAll('.selected').forEach(n=>n.classList.remove('selected'));e.target.closest(c.selector).classList.add('selected');say('Seçildi: '+c.title)}},true);d.documentElement.scrollTop=y;d.body.scrollTop=y};frame.srcdoc=working}
-function extractEntries(src){const match=src.match(/const entries\s*=\s*(\[[\s\S]*?\]);(?=\s*const ordered)/);if(!match)return [];try{const data=JSON.parse(match[1]);return Array.isArray(data)?data:[]}catch{return []}}
-function switchTab(tab){activeTab=tab;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));fields.hidden=tab==='articles';document.getElementById('article-panel').hidden=tab!=='articles';if(tab==='articles')renderArticleFields();else makeFields()}
-function renderArticleFields(){const panel=document.getElementById('article-panel');panel.replaceChildren();const heading=document.createElement('h2');heading.textContent='Yazılar.';panel.append(heading);const note=document.createElement('p');note.className='hint';note.textContent='Yeni yazı ekle, seç, düzenle veya sil. Sağdaki önizleme anında güncellenir.';panel.append(note);const add=document.createElement('button');add.textContent='+ Yeni yazı';add.onclick=()=>{entries.unshift({id:'yazi-'+Date.now(),date:new Date().toISOString().slice(0,10),title:'Yeni yazı',excerpt:'',image:'',color:'#493039',body:['']});selectedEntry=0;renderArticleFields();render();say('Yeni yazı eklendi (henüz yayımlanmadı).')};panel.append(add);const list=document.createElement('div');list.className='entry-list';entries.forEach((e,i)=>{const b=document.createElement('button');b.className='entry-item'+(selectedEntry===i?' active':'');b.textContent=(e.title||'Başlıksız')+' · '+(e.date||'');b.onclick=()=>{selectedEntry=i;renderArticleFields()};list.append(b)});panel.append(list);if(selectedEntry<0||!entries[selectedEntry]){const n=document.createElement('p');n.className='empty-note';n.textContent=entries.length?'Düzenlemek için bir yazı seç.':'Henüz yazı yok. İlk yazını ekleyebilirsin.';panel.append(n);return}const e=entries[selectedEntry];const defs=[['title','Başlık','text'],['date','Yayın tarihi','date'],['excerpt','Kısa açıklama','textarea'],['image','Kapak görseli','image'],['color','Vurgu rengi','color'],['body','Yazının tamamı (paragrafları boş satırla ayır)','textarea']];for(const [key,label,type] of defs){const l=document.createElement('label');l.textContent=label;panel.append(l);const input=document.createElement(type==='textarea'?'textarea':'input');if(type!=='textarea')input.type=type;input.value=key==='body'?(e.body||[]).join('\n\n'):(e[key]||'');if(key==='body')input.style.minHeight='210px';input.addEventListener('input',()=>{e[key]=key==='body'?input.value.split(/\n\s*\n/):input.value;render()});panel.append(input);if(type==='image')addImageControls(panel,input,'article-image')}const buttons=document.createElement('div');buttons.className='rowbtn';const remove=document.createElement('button');remove.className='danger';remove.textContent='Yazıyı sil';remove.onclick=()=>{if(!confirm('Bu yazıyı taslaktan silmek istiyor musun?'))return;entries.splice(selectedEntry,1);selectedEntry=-1;renderArticleFields();render()};buttons.append(remove);panel.append(buttons)}
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
-async function boot(){try{const response=await fetch('/index.html',{cache:'no-store'});if(!response.ok)throw Error('Ana sayfa okunamadı ('+response.status+')');source=await response.text();const doc=parse(source);if(!doc.querySelector('.hero')||!doc.querySelector('#archive-grid')||doc.querySelector('#fields'))throw Error('index.html içinde dergi yerine editör veya farklı bir sayfa var. Önce GitHub\'da index.html dosyasını kontrol etmeliyiz.');entries=extractEntries(source);let recoveredFrom='';try{let raw=localStorage.getItem(KEY);let saved=raw?JSON.parse(raw):null;if(!saved||!Array.isArray(saved.entries)||saved.entries.length===0){for(const legacyKey of LEGACY_KEYS){const oldRaw=localStorage.getItem(legacyKey);if(!oldRaw)continue;let candidate;try{candidate=JSON.parse(oldRaw)}catch{continue}if(Array.isArray(candidate.entries)&&candidate.entries.length){saved=candidate;recoveredFrom=legacyKey;break}}}if(saved){state=saved.state||{};if(Array.isArray(saved.entries))entries=saved.entries}}catch{state={}}switchTab('page');render(false);say(recoveredFrom?'Eski yazıların '+recoveredFrom+' kaydından geri getirildi. Yazılar sekmesini aç ve ardından Taslağı kaydet düğmesine bas.':'Önizleme hazır. Metinlere tıklayarak düzenleyebilirsin.')}catch(e){say('HATA: '+e.message);fields.innerHTML='';frame.removeAttribute('srcdoc')}}
-document.getElementById('save').onclick=()=>{try{localStorage.setItem(KEY,JSON.stringify({state,entries}));say('Taslak bu tarayıcıda kaydedildi.')}catch(e){say('Tarayıcı depolama alanı doldu. HTML indir ile yedek al; görselleri küçültmeyi dene.')}};
-document.getElementById('reload').onclick=()=>{render(false);say('Önizleme yenilendi.')};
-document.getElementById('reset').onclick=()=>{if(!confirm('Taslağı sıfırlamak istiyor musun?'))return;localStorage.removeItem(KEY);state={};entries=extractEntries(source);selectedEntry=-1;switchTab(activeTab);render(false);say('Taslak sıfırlandı.')};
-document.getElementById('export').onclick=()=>{if(!working){say('Önce site yüklenmeli.');return}const blob=new Blob([working],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='index-duzenlenmis.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);say('HTML indirildi. Canlı site değişmedi.')};boot();
-</script></body></html>
+
+export default {
+  async fetch(request, env) {
+    const path = new URL(request.url).pathname;
+
+    if (
+      !env.GITHUB_CLIENT_ID ||
+      !env.GITHUB_CLIENT_SECRET ||
+      !env.OAUTH_STATE_SECRET
+    ) {
+      return new Response(
+        'OAuth configuration incomplete',
+        { status: 503 }
+      );
+    }
+
+    if (path === '/auth' || path === '/') {
+      return handshake();
+    }
+
+    if (path === '/start') {
+      return start(env);
+    }
+
+    if (path === '/callback') {
+      return callback(request, env);
+    }
+
+    return new Response(
+      'Not found',
+      { status: 404 }
+    );
+  }
+};
