@@ -72,17 +72,44 @@
  .reader-body{font-size:16px;line-height:1.95}
 }
 
+
+/* 02 Art Gallery + 03 Contemporary Newspaper: compact horizontal archive */
+.archive{background:#1b1014;padding:62px 7% 100px;border-top:1px solid #674650}
+.archive-heading{align-items:end;margin-bottom:23px;gap:18px}
+.archive-eyebrow,.archive-heading-index{display:block;font-size:10px;letter-spacing:.18em;color:#c5aca9}
+.archive h2{font-size:clamp(54px,8vw,110px);line-height:.97;color:#f1e6dc;margin:15px 0 11px}
+.archive-deck{color:#bda9a5;font-size:12px;line-height:1.6;margin:0}
+.archive-grid{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid rgba(241,230,220,.45)}
+.archive-card,.archive-card:nth-child(n){display:grid;grid-column:auto;grid-template-columns:minmax(130px,24%) minmax(0,1fr) 30px;align-items:center;gap:clamp(17px,3.5vw,56px);min-width:0;padding:21px 3px;border-bottom:1px solid rgba(241,230,220,.24);transition:background .25s,padding .25s}
+.archive-card:hover{background:rgba(255,255,255,.035);padding-left:12px}
+.archive-art,.archive-card:nth-child(n) .archive-art{width:100%;height:clamp(120px,14vw,200px);aspect-ratio:auto;overflow:hidden}
+.archive-art img{object-fit:cover}
+.archive-number{font-size:9px;top:12px;left:12px}
+.archive-details{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:12px;margin:0;padding:0;border:0}
+.archive-title{font-size:clamp(30px,4.4vw,67px);line-height:1.02;color:#f1e6dc;transition:color .25s}
+.archive-card:hover .archive-title{color:#d9a9ac}
+.archive-date{padding:0;color:#c4aaa7;font-size:10px}
+.archive-card::after{content:'↗';font-family:Arial,sans-serif;font-size:23px;color:#f1e6dc;justify-self:end;transition:transform .25s}
+.archive-card:hover::after{transform:translate(3px,-3px)}
+@media(max-width:800px){.archive{padding:42px 5% 65px}.archive-heading{margin-bottom:20px}.archive-heading-index{display:none}.archive h2{font-size:clamp(51px,11vw,80px)}.archive-card,.archive-card:nth-child(n){grid-template-columns:minmax(100px,34%) minmax(0,1fr) 16px;gap:14px;padding:13px 0}.archive-art,.archive-card:nth-child(n) .archive-art{height:112px}.archive-title{font-size:clamp(25px,6vw,39px)}.archive-details{gap:9px}.archive-card::after{font-size:17px}}
+@media(max-width:380px){.archive-card,.archive-card:nth-child(n){grid-template-columns:31% minmax(0,1fr) 13px;gap:10px}.archive-art,.archive-card:nth-child(n) .archive-art{height:94px}.archive-title{font-size:24px}.archive-number{font-size:8px;left:7px;top:7px}}
+
+
+/* Homepage: uninterrupted exhibition of all writings, newest first. */
+.writing-gallery{padding:clamp(20px,4vw,52px) 7% 95px;border-top:1px solid #674650;background:#1b1014}
+.writing-gallery .archive-grid{border-top:0}
+.writing-gallery .archive-card:first-child{border-top:1px solid rgba(241,230,220,.45)}
+@media(max-width:800px){.writing-gallery{padding:15px 5% 60px}.writing-gallery .archive-card:first-child{padding-top:15px}}
 </style>
 </head>
 <body>
 <section class="hero" id="top">
 <header class="header"><a href="#top" class="logo">TOMREYES</a><nav class="nav" aria-label="Ana menü"><a href="mailto:tomreyeda@gmail.com?subject=TOMREYES.JOURNAL%20%E2%80%94%20%C4%B0leti%C5%9Fim">İletişim</a></nav></header>
 <div class="hero-content"><div class="eyebrow">An Open Canvas</div><h1>TOMREYES.<em>JOURNAL</em></h1><div class="hero-line"></div><div class="hero-description">You can be anything, once you've learned to be yourself.</div></div>
-<a href="#editorial" class="scroll-cue">Explore<span>↓</span></a>
+<a href="#gallery" class="scroll-cue">Explore<span>↓</span></a>
 </section>
 <main>
-<section class="editorial" id="editorial"><div class="section-top" aria-hidden="true"></div><div id="latest-entry"></div></section>
-<section class="archive" id="archive"><div class="archive-heading"><h2>Archive.</h2></div><div class="archive-grid" id="archive-grid"></div></section>
+<section class="archive writing-gallery" id="gallery"><div class="archive-grid" id="archive-grid"></div></section>
 <section class="about" id="about"><span class="about-label">Çıkış</span><div><p>Bir konu etrafında değil, bir zihin etrafında şekillenir.</p><small>TOMREYES.JOURNAL — Bir dijital düşünce sergisi. Görsel kimliği tutarlı, düşüncesi özgür.</small></div></section>
 </main>
 <footer class="footer"><span>TOMREYES.JOURNAL</span><span>An Open Canvas</span><span>© 2026</span></footer>
@@ -103,16 +130,14 @@ const safeImage = url => {
     ? url : '';
 };
 
-const latest=document.getElementById('latest-entry');const archive=document.getElementById('archive-grid');
+const archive=document.getElementById('archive-grid');
 if(ordered.length){
-  const entry=ordered[0];
-  latest.innerHTML=`<article class="feature"><a class="feature-art" href="#read/${encodeURIComponent(entry.id)}" aria-label="${escapeHTML(entry.title)} yazısını oku">${safeImage(entry.image)?`<img src="${escapeHTML(safeImage(entry.image))}" alt="${escapeHTML(entry.title)} için kapak görseli">`:''}<span class="art-index">/001</span></a><div><div class="feature-meta"><span>/001</span><span class="rule"></span><time datetime="${entry.date}">${formatDate(entry.date)}</time></div><h3>${escapeHTML(entry.title)}</h3><p>${escapeHTML(entry.excerpt)}</p><a class="read-link" href="#read/${encodeURIComponent(entry.id)}">Yazıyı oku ↗</a></div></article>`;
   archive.innerHTML=ordered.map((item,i)=>`<a class="archive-card" href="#read/${encodeURIComponent(item.id)}" style="--accent:${/^#[0-9a-fA-F]{6}$/.test(item.color)?item.color:'#45303a'}"><div class="archive-art">${safeImage(item.image)?`<img src="${escapeHTML(safeImage(item.image))}" loading="lazy" alt="${escapeHTML(item.title)} için kapak görseli">`:`<span class="archive-no-image">${escapeHTML(item.title)}</span>`}<span class="archive-number">${String(i+1).padStart(3,'0')} / JOURNAL</span></div><div class="archive-details"><strong class="archive-title">${escapeHTML(item.title)}</strong><time class="archive-date" datetime="${item.date}">${formatDate(item.date)}</time></div></a>`).join('');
-}else{latest.innerHTML='<p class="feature-empty">İlk düşünce burada sergilenecek.</p>';archive.innerHTML='<p class="archive-empty">Arşiv henüz boş. İlk yazıyla birlikte oluşmaya başlayacak.</p>'}
-const reader=document.getElementById('reader');const readerContent=document.getElementById('reader-content');let previousHash='#editorial';
+}else{archive.innerHTML='<p class="archive-empty">Arşiv henüz boş. İlk yazıyla birlikte oluşmaya başlayacak.</p>'}
+const reader=document.getElementById('reader');const readerContent=document.getElementById('reader-content');let previousHash='#gallery';
 function updateReader(){const match=location.hash.match(/^#read\/(.+)$/);if(!match){reader.hidden=true;document.body.style.overflow='';return}let id;try{id=decodeURIComponent(match[1])}catch{return}const item=ordered.find(entry=>entry.id===id);if(!item){reader.hidden=true;document.body.style.overflow='';return}readerContent.innerHTML=`<div class="reader-opening"><div class="reader-heading"><div class="reader-kicker">An Open Canvas</div><h2 id="reader-title">${escapeHTML(item.title)}</h2><div class="reader-date">${formatDate(item.date)}</div></div>${safeImage(item.image)?`<div class="reader-art"><img class="reader-cover" src="${escapeHTML(safeImage(item.image))}" alt="${escapeHTML(item.title)} için kapak görseli"></div>`:''} </div><div class="reader-body-layout"><aside class="reader-side"><span>/001</span></aside><div><div class="reader-body">${item.body.map(paragraph=>`<p>${escapeHTML(paragraph)}</p>`).join('')}</div><button class="reader-back" type="button">← Arşive dön</button></div></div><div class="reader-ending">TOMREYES.JOURNAL &nbsp; — &nbsp; AN OPEN CANVAS</div>`;reader.hidden=false;document.body.style.overflow='hidden';reader.scrollTop=0;readerContent.querySelector('.reader-back').addEventListener('click',closeReader)}
-function closeReader(){location.hash=previousHash&&previousHash.startsWith('#read/')?'#archive':previousHash||'#archive'}
-document.addEventListener('click',event=>{const link=event.target.closest('a[href^="#read/"]');if(link&&!location.hash.startsWith('#read/'))previousHash=link.closest('#archive')?'#archive':'#editorial'});
+function closeReader(){location.hash=previousHash&&previousHash.startsWith('#read/')?'#gallery':previousHash||'#gallery'}
+document.addEventListener('click',event=>{const link=event.target.closest('a[href^="#read/"]');if(link&&!location.hash.startsWith('#read/'))previousHash='#gallery'});
 document.getElementById('reader-close').addEventListener('click',closeReader);document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!reader.hidden)closeReader()});window.addEventListener('hashchange',updateReader);updateReader();
 </script>
 
