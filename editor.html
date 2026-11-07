@@ -29,6 +29,9 @@ const config=[
 const frame=document.getElementById('preview'),fields=document.getElementById('fields'),status=document.getElementById('status');
 let source='',working='',state={},lastSelected=null,entries=[],selectedEntry=-1,activeTab='page';
 const say=t=>status.textContent=t;
+const isJournalHTML=html=>/TOMREYES\.JOURNAL/i.test(html||'') && /(?:writing-gallery|archive-grid|const entries\s*=)/.test(html||'') && !/(?:<title>\s*TOMREYES\s*[—-]\s*Görsel Editör|<h2>Theme editor\.<\/h2>)/i.test(html||'');
+const checkedJournalTemplate=()=>{const html=journalTemplate();if(!isJournalHTML(html))throw Error('Site şablonu geçersiz: editör sayfası algılandı.');return html};
+
 const parse=s=>new DOMParser().parseFromString(s,'text/html');
 const serialize=d=>'<!DOCTYPE html>\n'+d.documentElement.outerHTML;
 function originalValue(doc,c){if(c.css){const css=doc.querySelector('style')?.textContent||'';return css.match(new RegExp(c.css.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*:\\s*(#[0-9a-fA-F]{6})'))?.[1]||'#100b0d'}if(c.special)return (doc.querySelector('style')?.textContent||'').match(/url\("([^"\n]+)"\) center\/cover/)?.[1]||'';return doc.querySelector(c.selector)?.textContent?.trim()||''}
@@ -116,6 +119,8 @@ function render(preserveScroll=true){
  const old=frame.contentDocument;
  const y=preserveScroll?old?.documentElement?.scrollTop||old?.body?.scrollTop||0:0;
  working=build();
+ if(!isJournalHTML(working)){say('Önizleme durduruldu: site yerine editör HTML dosyası algılandı.');return;}
+ frame.removeAttribute('src');
  frame.onload=()=>{
   const d=frame.contentDocument;if(!d)return;
    // Yazı bağlantılarını gerçek sitenin kendi okuyucusu açar.
@@ -144,7 +149,7 @@ async function boot(){try{
  const response=await fetch('/index.html',{cache:'no-store'});
  if(!response.ok)throw Error('Ana sayfa okunamadı ('+response.status+')');
  const live=await response.text();
- source=journalTemplate();
+ source=checkedJournalTemplate();
  const liveEntries=extractEntries(live);
  entries=liveEntries.length?liveEntries:extractEntries(source);
  let recoveredFrom='';
@@ -224,6 +229,7 @@ document.getElementById('publish').onclick=async()=>{
   if(!existing.sha)throw Error('GitHub dosya sürümü bulunamadı.');
   // Rebuild using the newest current editor state.
   const output=build();
+  if(!isJournalHTML(output))throw Error('Yayımlama durduruldu: oluşturulan dosya bir site sayfası değil.');
   if(!output.includes('const entries = '))throw Error('Yazılar site dosyasına işlenemedi. Yayımlama durduruldu.');
   say('Değişiklikler GitHub’a gönderiliyor…');
   const result=await githubRequest(path,{
@@ -238,5 +244,5 @@ document.getElementById('publish').onclick=async()=>{
   say('Yayımlama tamamlanamadı: '+e.message+'\nTaslağın korunuyor; canlı site değişmedi veya GitHub sonucunu doğrulayamadık.');
  }finally{button.disabled=false;button.textContent='Yayımla'}
 };
-document.getElementById('export').onclick=()=>{if(!working){say('Önce site yüklenmeli.');return}const blob=new Blob([working],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='index-duzenlenmis.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);say('HTML indirildi. Canlı site değişmedi.')};boot();
+document.getElementById('export').onclick=()=>{if(working&&!isJournalHTML(working)){say('İndirme durduruldu: site HTML doğrulaması başarısız.');return}if(!working){say('Önce site yüklenmeli.');return}const blob=new Blob([working],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='index-duzenlenmis.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);say('HTML indirildi. Canlı site değişmedi.')};boot();
 </script></body></html>
