@@ -170,6 +170,117 @@
 @media(max-width:800px){.writing-gallery{padding:27px 5% 70px}.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){grid-template-columns:minmax(90px,35%) minmax(0,1fr) 15px;gap:13px;padding:17px 0}.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(n) .archive-art{height:clamp(112px,24vw,175px);box-shadow:7px 7px 0 -5px rgba(191,182,172,.35)}.writing-gallery .archive-title{font-size:clamp(26px,6vw,46px)}.writing-gallery .archive-date{font-size:9px;letter-spacing:.05em;padding-top:9px}.writing-gallery .archive-number{font-size:8px;bottom:5px;left:5px;padding:4px}.writing-gallery .archive-card::after{font-size:16px}.writing-gallery .archive-card:hover{padding-left:5px}}
 @media(max-width:390px){.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){grid-template-columns:34% minmax(0,1fr) 12px;gap:9px}.writing-gallery .archive-title{font-size:25px}.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(n) .archive-art{height:100px}}
 
+
+/* Quiet Industrial Romance — independent live HTML preview */
+.writing-gallery{background:#ded2c3;color:#2d1b20;padding:76px clamp(24px,6vw,110px) 115px;position:relative;overflow:hidden}
+.writing-gallery:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;background-image:repeating-linear-gradient(90deg,transparent 0,transparent 3px,rgba(76,57,49,.09) 4px,transparent 5px);mix-blend-mode:multiply}
+.writing-gallery .archive-grid{border-top:1px solid #9f8f85;position:relative}
+.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){position:relative;display:grid;grid-template-columns:minmax(0,47%) minmax(0,1fr);gap:clamp(24px,6vw,100px);align-items:center;padding:clamp(60px,8vw,118px) clamp(8px,3vw,45px);border-bottom:1px solid #aa9b91;min-height:410px;background:transparent;transition:none}
+.writing-gallery .archive-card:first-child{border-top:0}
+.writing-gallery .archive-card:nth-child(even){grid-template-columns:minmax(0,1fr) minmax(0,46%);background:transparent}
+.writing-gallery .archive-card:nth-child(even) .archive-art{grid-column:2;grid-row:1}
+.writing-gallery .archive-card:nth-child(even) .archive-details{grid-column:1;grid-row:1}
+.writing-gallery .archive-card:nth-child(3n) {background:linear-gradient(135deg,rgba(101,79,78,.055),transparent 70%)}
+.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(n) .archive-art{width:100%;height:clamp(245px,32vw,450px);max-width:510px;overflow:visible;background:transparent;position:relative;box-shadow:none;transform:none}
+.writing-gallery .archive-card:nth-child(odd) .archive-art{margin-left:clamp(0px,3vw,36px)}
+.writing-gallery .archive-card:nth-child(even) .archive-art{justify-self:end;margin-right:clamp(0px,2vw,25px);width:85%;height:clamp(240px,27vw,370px)}
+.writing-gallery .archive-art:before{content:"";position:absolute;inset:-17px 16px 17px -16px;background:linear-gradient(130deg,#a4a29d,#e3e0d8 26%,#868480 49%,#d6d2c9 71%,#77716d);z-index:0;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+.writing-gallery .archive-card:nth-child(even) .archive-art:before{inset:17px -19px -17px 19px;background:#4a1a28}
+.writing-gallery .archive-art img{position:relative;z-index:1;object-fit:cover;width:100%;height:100%;filter:saturate(.86);transition:transform .7s,filter .7s}
+.writing-gallery .archive-art::after{display:none}
+.writing-gallery .archive-card:hover .archive-art img{transform:translate(-4px,-4px);filter:saturate(1)}
+.writing-gallery .archive-number{z-index:2;top:auto;bottom:11px;left:12px;background:rgba(24,16,20,.65);color:#f4e8dc;font-size:9px;letter-spacing:.07em;padding:5px 8px}
+.writing-gallery .archive-details{display:flex;flex-direction:column;gap:22px;align-items:flex-start;justify-content:center;border:0;margin:0;padding:0;max-width:550px}
+.writing-gallery .archive-title,.writing-gallery .archive-card:nth-child(even) .archive-title{font-family:'Cormorant Garamond',serif;color:#321c23;font-size:clamp(32px,3.7vw,57px);font-weight:400;line-height:1.1;letter-spacing:-.025em;max-width:540px}
+.writing-gallery .archive-date{order:-1;color:#6f5b56;border:0;padding:0;font-size:10px;letter-spacing:.15em}
+.writing-gallery .archive-card::after{content:'↗';position:absolute;right:clamp(8px,2vw,30px);bottom:42px;font-size:20px;color:#513a3d}
+.writing-gallery .archive-card:hover{padding-left:clamp(8px,3vw,45px);background:transparent}
+.writing-gallery .archive-card:hover .archive-title{color:#692e40}
+.writing-gallery .archive-card:nth-child(even):after{right:auto;left:clamp(8px,2vw,30px)}
+@media(max-width:760px){.writing-gallery{padding:42px 6% 75px}.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){grid-template-columns:minmax(0,43%) minmax(0,1fr);gap:20px;min-height:220px;padding:43px 0}.writing-gallery .archive-card:nth-child(even){grid-template-columns:minmax(0,1fr) minmax(0,43%)}.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(n) .archive-art{height:clamp(150px,35vw,255px);width:100%;margin:0}.writing-gallery .archive-card:nth-child(even) .archive-art{height:clamp(150px,35vw,255px);width:100%;margin:0}.writing-gallery .archive-art:before{inset:-8px 7px 8px -7px}.writing-gallery .archive-card:nth-child(even) .archive-art:before{inset:8px -7px -8px 7px}.writing-gallery .archive-title,.writing-gallery .archive-card:nth-child(even) .archive-title{font-size:clamp(24px,5.2vw,37px);line-height:1.1}.writing-gallery .archive-details{gap:13px}.writing-gallery .archive-date{font-size:8px;letter-spacing:.08em}.writing-gallery .archive-card::after{font-size:15px;bottom:12px;right:2px}.writing-gallery .archive-card:nth-child(even):after{left:2px}.writing-gallery .archive-number{font-size:7px;left:6px;bottom:6px;padding:4px}}
+@media(max-width:380px){.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){gap:14px}.writing-gallery .archive-title,.writing-gallery .archive-card:nth-child(even) .archive-title{font-size:23px}}
+
+/* TOMREYES / chromatic geometry — gallery only */
+.writing-gallery{position:relative;isolation:isolate;overflow:hidden;background:#e6dbcc!important;padding-top:95px!important;padding-bottom:115px!important}
+.writing-gallery:before{content:"";position:absolute;z-index:-1;pointer-events:none;top:20px;left:-75px;width:290px;height:290px;border-radius:50%;background:#2354b9;box-shadow:inset -32px -22px 0 rgba(10,25,70,.12);transform:translateY(-42%)}
+.writing-gallery:after{content:"";position:absolute;z-index:-1;pointer-events:none;bottom:10px;right:-90px;width:290px;height:390px;background:#e3322b;clip-path:polygon(36% 0,100% 0,100% 100%,0 100%);transform:rotate(-12deg)}
+.writing-gallery .archive-grid{position:relative;z-index:1;max-width:1440px;margin:auto;overflow:visible!important}
+.writing-gallery .archive-grid:before{content:"";position:absolute;z-index:-1;left:47%;top:-85px;width:100px;height:25px;background:#e53832;transform:rotate(-18deg)}
+.writing-gallery .archive-grid:after{content:"";position:absolute;z-index:-1;right:-3%;top:44%;width:120px;height:120px;border:21px solid #2457c2;border-radius:50%;opacity:.95}
+.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){position:relative;z-index:1;overflow:visible!important;background:transparent!important;border-color:rgba(54,32,35,.3)!important;min-height:280px}
+.writing-gallery .archive-card:nth-child(odd):before{content:"";position:absolute;z-index:-1;left:-35px;top:50%;width:clamp(95px,14vw,190px);height:clamp(110px,15vw,210px);background:#2254b9;transform:translateY(-50%) rotate(-7deg);pointer-events:none}
+.writing-gallery .archive-card:nth-child(even):before{content:"";position:absolute;z-index:-1;right:5%;top:12%;width:clamp(75px,10vw,135px);height:clamp(75px,10vw,135px);background:#e43b2f;border-radius:50%;pointer-events:none}
+.writing-gallery .archive-card:nth-child(3n):before{background:#2457bb;border-radius:0;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.writing-gallery .archive-art{box-shadow:12px 12px 0 rgba(33,27,29,.16);border:1px solid rgba(42,30,31,.3)}
+.writing-gallery .archive-card:nth-child(even) .archive-art{box-shadow:-11px 11px 0 #e34233}
+.writing-gallery .archive-title{color:#301c22!important;font-size:clamp(27px,3.25vw,48px)!important;font-weight:400!important}
+.writing-gallery .archive-date{color:#704b4c!important}
+.writing-gallery .archive-card:after{color:#a42b28!important}
+@media(max-width:800px){.writing-gallery{padding-top:65px!important;padding-bottom:80px!important}.writing-gallery:before{width:145px;height:145px;left:-65px}.writing-gallery:after{width:125px;height:190px;right:-65px}.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){min-height:160px}.writing-gallery .archive-card:nth-child(odd):before{left:-14px;width:70px;height:95px}.writing-gallery .archive-card:nth-child(even):before{right:-8px;width:65px;height:65px}.writing-gallery .archive-grid:after{width:60px;height:60px;border-width:12px;right:-15px}.writing-gallery .archive-title{font-size:clamp(23px,5.4vw,33px)!important}}
+
+
+/* CHROMATIC NOCTURNE — deeper, more saturated gallery only */
+.writing-gallery{background:radial-gradient(ellipse at 74% 25%,#351025 0%,transparent 49%),linear-gradient(155deg,#170b19 0%,#210d21 48%,#0d142b 100%)!important;border-top:1px solid #7c203a!important}
+.writing-gallery:before{background:#174cff!important;box-shadow:0 0 0 25px #102b91,0 0 0 26px rgba(248,221,206,.2),inset -34px -30px 0 #0d2a9d!important;width:330px;height:330px;top:10%;left:-145px;transform:rotate(-20deg)!important}
+.writing-gallery:after{background:#f02527!important;width:400px;height:510px;right:-195px;bottom:5%;transform:rotate(-18deg)!important;box-shadow:none}
+.writing-gallery .archive-grid:before{background:#ff2b30!important;width:150px;height:32px;top:-40px;left:44%;transform:rotate(-24deg)!important}
+.writing-gallery .archive-grid:after{border-color:#1959ff!important;width:175px;height:175px;border-width:32px;right:-7%;top:42%;opacity:1!important}
+.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){border-color:rgba(255,226,218,.28)!important}
+.writing-gallery .archive-card:nth-child(odd):before{background:#164bfa!important;transform:translateY(-50%) rotate(-12deg)!important;box-shadow:14px 13px 0 #0a2382}
+.writing-gallery .archive-card:nth-child(even):before{background:#ff2930!important;box-shadow:15px 13px 0 #791320}
+.writing-gallery .archive-card:nth-child(3n):before{background:#1849ee!important;box-shadow:none}
+.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(n) .archive-art{border-color:rgba(255,230,215,.35)!important;box-shadow:13px 13px 0 rgba(9,13,48,.85)!important}
+.writing-gallery .archive-card:nth-child(even) .archive-art{box-shadow:-13px 13px 0 #e91f2a!important}
+.writing-gallery .archive-art:before{background:linear-gradient(135deg,#0b3dd4,#2463ff 50%,#0b247b)!important}
+.writing-gallery .archive-card:nth-child(even) .archive-art:before{background:#ec2431!important}
+.writing-gallery .archive-title,.writing-gallery .archive-card:nth-child(even) .archive-title{color:#f7e9df!important;text-shadow:0 1px 0 rgba(0,0,0,.2)}
+.writing-gallery .archive-card:hover .archive-title{color:#ff7375!important}
+.writing-gallery .archive-date{color:#d7b5bd!important}
+.writing-gallery .archive-card:after{color:#ff414b!important}
+.writing-gallery .archive-number{background:#151026!important;color:#f7e9df!important}
+@media(max-width:800px){.writing-gallery:before{width:190px;height:190px;left:-110px;box-shadow:0 0 0 12px #102b91!important}.writing-gallery:after{width:190px;height:250px;right:-110px}.writing-gallery .archive-grid:after{width:85px;height:85px;border-width:17px;right:-25px}.writing-gallery .archive-card:nth-child(odd):before{box-shadow:7px 7px 0 #0a2382}}
+
+/* Revision: vivid deep-navy cobalt directly behind every artwork */
+.writing-gallery .archive-card:nth-child(n):before{
+ background:#123fdf!important;border-radius:0!important;clip-path:none!important;
+ box-shadow:15px 14px 0 #071d75!important;
+ left:clamp(-28px,-2vw,-10px)!important;right:auto!important;
+ top:50%!important;width:clamp(130px,24vw,360px)!important;
+ height:clamp(135px,19vw,255px)!important;
+ transform:translateY(-48%) rotate(-5deg)!important;
+}
+.writing-gallery .archive-card:nth-child(even):before{
+ left:auto!important;right:clamp(-28px,-2vw,-10px)!important;
+ transform:translateY(-48%) rotate(5deg)!important;
+}
+.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(even) .archive-art{
+ box-shadow:12px 12px 0 #0b2a98!important;
+}
+@media(max-width:800px){
+ .writing-gallery .archive-card:nth-child(n):before{width:clamp(105px,38vw,190px)!important;height:135px!important;box-shadow:7px 8px 0 #071d75!important}
+}
+
+/* Revision: near-black background, no geometric decorations. Blue behind artwork only. */
+.writing-gallery{background:#080709!important;border-top:1px solid #252026!important;isolation:isolate}
+.writing-gallery::before,.writing-gallery::after,
+.writing-gallery .archive-grid::before,.writing-gallery .archive-grid::after,
+.writing-gallery .archive-card:nth-child(n)::before{content:none!important;display:none!important;box-shadow:none!important}
+.writing-gallery .archive-card,.writing-gallery .archive-card:nth-child(n){background:transparent!important;border-color:rgba(235,222,215,.19)!important}
+.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(n) .archive-art{box-shadow:none!important;border:0!important}
+.writing-gallery .archive-art::before,.writing-gallery .archive-card:nth-child(even) .archive-art::before{content:""!important;display:block!important;background:#123fdf!important;clip-path:none!important;box-shadow:none!important;inset:14px -15px -14px 15px!important;z-index:0!important}
+.writing-gallery .archive-card:nth-child(even) .archive-art::before{inset:14px 15px -14px -15px!important}
+.writing-gallery .archive-title,.writing-gallery .archive-card:nth-child(even) .archive-title{color:#f0e5dc!important;text-shadow:none!important}
+.writing-gallery .archive-date{color:#c2aeb0!important}
+.writing-gallery .archive-card::after{color:#e7d6cf!important}
+@media(max-width:760px){.writing-gallery .archive-art::before,.writing-gallery .archive-card:nth-child(even) .archive-art::before{inset:8px -8px -8px 8px!important}}
+
+/* Final revision: pure dark gallery, no cobalt or geometric backplates */
+.writing-gallery{background:#080709!important}
+.writing-gallery .archive-art::before,
+.writing-gallery .archive-card:nth-child(n) .archive-art::before{content:none!important;display:none!important;background:none!important;box-shadow:none!important}
+.writing-gallery .archive-art,
+.writing-gallery .archive-card:nth-child(n) .archive-art{background:#111013!important;box-shadow:none!important}
+.writing-gallery .archive-card:nth-child(n)::before{content:none!important;display:none!important}
 </style>
 </head>
 <body>
