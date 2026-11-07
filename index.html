@@ -316,7 +316,45 @@
 .gallery-fragment span{font:60px 'Cormorant Garamond',serif;color:#9c657c}
 .gallery-empty{grid-column:1/-1;font:13px 'DM Sans',sans-serif;color:#b8a9ab;padding:45px 0}
 @media(max-width:700px){.writing-gallery{padding:24px 5% 65px!important}.gallery-filters{gap:12px;margin-bottom:21px}.gallery-filter{font-size:9px}.writing-gallery .archive-grid{gap:25px 13px!important}.writing-gallery .archive-card:nth-child(n){grid-column:span 6!important;margin-top:0!important}.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(n) .archive-art{aspect-ratio:.95!important}.writing-gallery .archive-title,.writing-gallery .archive-card:nth-child(even) .archive-title{font-size:clamp(23px,5vw,33px)!important}.gallery-fragment{padding:44px 0}.gallery-fragment p{font-size:clamp(31px,7vw,48px)}.gallery-fragment span{font-size:38px}}
+
+/* V7 — minimal, soft modern gallery. Hero and fragment deliberately untouched. */
+.writing-gallery{padding:clamp(28px,4.5vw,62px) clamp(20px,6vw,90px) 98px!important}
+.gallery-filters{gap:clamp(14px,2.3vw,28px);margin-bottom:39px;padding-bottom:16px;border-bottom-color:rgba(230,216,216,.17)}
+.gallery-filter{font-size:10px;letter-spacing:.09em;color:#a89ea0}
+.gallery-filter.is-active{border-bottom-color:#c8bfc0;color:#eee9e6}
+.writing-gallery .archive-grid{gap:clamp(28px,3.5vw,55px)!important}
+.writing-gallery .archive-card:nth-of-type(6n+2){margin-top:45px!important}
+.writing-gallery .archive-card:nth-of-type(6n+4){margin-top:24px!important}
+.writing-gallery .archive-card:nth-of-type(6n+6){margin-top:35px!important}
+.writing-gallery .archive-art,.writing-gallery .archive-card:nth-child(n) .archive-art{background:var(--accent,#1d1b1e)!important}
+.writing-gallery .archive-art img{filter:saturate(.83) contrast(1.01)!important;transition:transform .6s ease,filter .5s ease}
+.writing-gallery .archive-card:hover .archive-art img{transform:scale(1.022)!important;filter:saturate(.94) contrast(1.01)!important}
+.writing-gallery .archive-details{padding:18px 0 0!important;gap:9px!important}
+.writing-gallery .archive-date{order:-1!important;font:400 10px 'DM Sans',sans-serif!important;letter-spacing:.065em!important;color:#aaa2a5!important;text-transform:none!important}
+.writing-gallery .archive-title,.writing-gallery .archive-card:nth-child(even) .archive-title{font:400 clamp(24px,2.6vw,36px)/1.18 'DM Sans',sans-serif!important;letter-spacing:-.048em!important;color:#e9e5e3!important;max-width:650px!important}
+.writing-gallery .archive-card:hover .archive-title{color:#f4eded!important}
+.writing-gallery .archive-number,.writing-gallery .gallery-tag{display:none!important}
+@media(max-width:700px){.writing-gallery .archive-grid{gap:26px 15px!important}.writing-gallery .archive-card:nth-child(n){margin-top:0!important}.writing-gallery .archive-title,.writing-gallery .archive-card:nth-child(even) .archive-title{font-size:clamp(18px,4.2vw,27px)!important;line-height:1.19!important}.writing-gallery .archive-details{padding-top:12px!important;gap:7px!important}.writing-gallery .archive-date{font-size:9px!important}}
+
+/* Fine Editorial Serif — light strokes, article titles only */
+.writing-gallery .archive-title,
+.writing-gallery .archive-card:nth-child(even) .archive-title{
+  font-family:'Cormorant Garamond',Georgia,serif!important;
+  font-size:clamp(27px,3vw,42px)!important;
+  font-weight:300!important;
+  font-style:normal!important;
+  line-height:1.16!important;
+  letter-spacing:-.018em!important;
+}
+@media(max-width:700px){
+  .writing-gallery .archive-title,
+  .writing-gallery .archive-card:nth-child(even) .archive-title{
+    font-size:clamp(22px,4.8vw,31px)!important;
+    line-height:1.18!important;
+  }
+}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&display=swap" rel="stylesheet">
 </head>
 <body>
 <section class="hero" id="top">
@@ -351,8 +389,8 @@ const archive=document.getElementById('archive-grid');
 const filterbar=document.getElementById('gallery-filters');
 const statement=document.getElementById('gallery-statement');
 let chosenCategory='ALL';
-const categoryOf=item=>String(item.category||'JOURNAL').trim().toUpperCase()||'JOURNAL';
-const allCategories=[...new Set(ordered.map(categoryOf))];
+const categoryOf=item=>String(item.category||'').trim().toUpperCase();
+const allCategories=[...new Set(ordered.map(categoryOf).filter(cat=>cat&&cat!=='JOURNAL'))];
 function renderGallery(){
  const categories=['ALL',...allCategories];
  filterbar.innerHTML=categories.map(cat=>`<button class="gallery-filter ${cat===chosenCategory?'is-active':''}" type="button" data-category="${escapeHTML(cat)}">${escapeHTML(cat)}${cat==='ALL'?' / '+String(ordered.length).padStart(2,'0'):''}</button>`).join('');
@@ -360,7 +398,7 @@ function renderGallery(){
  if(!items.length){archive.innerHTML='<p class="gallery-empty">Henüz bu alanda yazı bulunmuyor.</p>';return}
  archive.innerHTML=items.map((item,i)=>{
   const globalIndex=ordered.indexOf(item);
-  const art=`<a class="archive-card" href="#read/${encodeURIComponent(item.id)}" style="--accent:${/^#[0-9a-fA-F]{6}$/.test(item.color)?item.color:'#45303a'}"><div class="archive-art">${safeImage(item.image)?`<img src="${escapeHTML(safeImage(item.image))}" loading="lazy" alt="${escapeHTML(item.title)} için kapak görseli">`:`<span class="archive-no-image">${escapeHTML(item.title)}</span>`}<span class="archive-number">${String(globalIndex+1).padStart(3,'0')} / JOURNAL</span></div><div class="archive-details"><span class="gallery-tag">${escapeHTML(categoryOf(item))}</span><strong class="archive-title">${escapeHTML(item.title)}</strong><time class="archive-date" datetime="${escapeHTML(item.date)}">${formatDate(item.date)}</time></div></a>`;
+  const art=`<a class="archive-card" href="#read/${encodeURIComponent(item.id)}" style="--accent:${/^#[0-9a-fA-F]{6}$/.test(item.color)?item.color:'#45303a'}"><div class="archive-art">${safeImage(item.image)?`<img src="${escapeHTML(safeImage(item.image))}" loading="lazy" alt="${escapeHTML(item.title)} için kapak görseli">`:`<span class="archive-no-image">${escapeHTML(item.title)}</span>`}</div><div class="archive-details"><time class="archive-date" datetime="${escapeHTML(item.date)}">${formatDate(item.date)}</time><strong class="archive-title">${escapeHTML(item.title)}</strong></div></a>`;
   return art+(i===Math.min(1,items.length-1)?`<div class="gallery-fragment"><p>${escapeHTML(statement.textContent.trim())}</p><span>✳</span></div>`:'');
  }).join('');
 }
