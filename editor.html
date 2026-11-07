@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TOMREYES — Theme Editor</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#141013;color:#f1e9df;font:13px Arial,sans-serif}button,input,textarea{font:inherit}header{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid #44343b;gap:12px}header strong{letter-spacing:.15em}header small{color:#b5a4aa}button{background:#eee5dc;color:#20151a;border:0;padding:10px 13px;cursor:pointer;border-radius:4px}button.secondary{background:#33252d;color:#eee5dc}button:disabled{opacity:.5}main{display:grid;grid-template-columns:310px 1fr;height:calc(100vh - 58px)}aside{padding:22px;overflow:auto;border-right:1px solid #44343b}h2{font:28px Georgia,serif;font-weight:400;margin:0 0 8px}p{line-height:1.55;color:#c4b7b9}label{display:block;margin:17px 0 6px;color:#d5c8c7;font-size:12px}input,textarea{width:100%;background:#241b21;color:#fff;border:1px solid #57454d;padding:10px;border-radius:4px}textarea{min-height:80px;resize:vertical}input[type=color]{height:42px;padding:4px}hr{border:0;border-top:1px solid #44343b;margin:25px 0}.tip{font-size:11px;color:#a99b9d}section.preview{background:#0d0b0d;padding:14px;min-width:0}iframe{display:block;width:100%;height:100%;border:0;background:white}.buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.buttons button{flex:1}.status{font-size:11px;color:#bcaeb0}@media(max-width:750px){main{grid-template-columns:1fr;height:auto}aside{max-height:none}section.preview{height:70vh}}
+</style>
+</head>
+<body>
+<header><div><strong>TOMREYES / EDITOR</strong> <small>İlk sürüm</small></div><div><button class="secondary" id="reset">Taslağı sıfırla</button> <button id="export">HTML indir</button></div></header>
+<main><aside><h2>Theme editor.</h2><p>Soldaki alanları değiştir; sağdaki sayfa anında güncellensin.</p><div id="fields"></div><hr><div class="buttons"><button class="secondary" id="save">Taslağı kaydet</button><button class="secondary" id="reload">Yeniden yükle</button></div><p class="tip">Taslak sadece bu tarayıcıda tutulur. “HTML indir” düzenlenmiş sayfanın dosyasını oluşturur; canlı siteyi değiştirmez.</p><div class="status" id="status"></div></aside><section class="preview"><iframe id="preview" title="TOMREYES.JOURNAL önizleme"></iframe></section></main>
+<script>
+const KEY='tomreyes-editor-draft-v1';
+const config=[
+ {id:'eyebrow',title:'Açılış üst yazısı',type:'text',selector:'.eyebrow'},
+ {id:'headline',title:'Ana başlık',type:'text',selector:'.hero h1',note:'Ana başlığın özel italik görünümü bu alanda düz metne dönüşür.'},
+ {id:'subtitle',title:'Açılış alt yazısı',type:'textarea',selector:'.hero-description'},
+ {id:'archive',title:'Arşiv başlığı',type:'text',selector:'.archive h2'},
+ {id:'aboutlabel',title:'Son bölüm etiketi',type:'text',selector:'.about-label'},
+ {id:'about',title:'Son bölüm metni',type:'textarea',selector:'.about p'},
+ {id:'aboutsmall',title:'Son bölüm küçük metni',type:'textarea',selector:'.about small'},
+ {id:'footer',title:'Alt bilgi orta yazı',type:'text',selector:'.footer span:nth-child(2)'},
+ {id:'black',title:'Ana arka plan rengi',type:'color',css:'--black'},
+ {id:'paper',title:'Kâğıt rengi',type:'color',css:'--paper'},
+ {id:'cherry',title:'Vurgu rengi',type:'color',css:'--cherry'},
+ {id:'heroimage',title:'Açılış görseli (HTTPS bağlantısı)',type:'text',special:'heroimage'}
+];
+const frame=document.querySelector('#preview');const fields=document.querySelector('#fields');const status=document.querySelector('#status');
+let source='',working='',state={};
+function say(t){status.textContent=t}
+function getDoc(){return new DOMParser().parseFromString(working,'text/html')}
+function serialize(doc){return '<!DOCTYPE html>\n'+doc.documentElement.outerHTML}
+function originalValue(doc,c){if(c.css){const root=doc.querySelector('style')?.textContent||'';return root.match(new RegExp(c.css.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*:\\s*(#[0-9a-fA-F]{6})'))?.[1]||'#100b0d'}if(c.special)return (doc.querySelector('style')?.textContent||'').match(/url\("(https:\/\/[^"\n]+)"\) center\/cover/)?.[1]||'';return doc.querySelector(c.selector)?.textContent?.trim()||''}
+function makeFields(){const doc=getDoc();fields.replaceChildren();for(const c of config){const label=document.createElement('label');label.textContent=c.title;label.htmlFor=c.id;fields.append(label);const el=document.createElement(c.type==='textarea'?'textarea':'input');if(c.type!=='textarea')el.type=c.type==='color'?'color':'text';el.id=c.id;el.value=state[c.id]??originalValue(doc,c);state[c.id]=el.value;el.addEventListener('input',()=>{state[c.id]=el.value;render()});fields.append(el);if(c.note){const p=document.createElement('p');p.className='tip';p.textContent=c.note;fields.append(p)}}}
+function render(){const doc=new DOMParser().parseFromString(source,'text/html');let css=doc.querySelector('style')?.textContent||'';for(const c of config){const value=state[c.id];if(value===undefined)continue;if(c.css){const escaped=c.css.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');css=css.replace(new RegExp('('+escaped+'\\s*:\\s*)#[0-9a-fA-F]{6}'),(_,prefix)=>prefix+value)}else if(c.special==='heroimage'){if(/^https:\/\/[^\s"'<>]+$/.test(value)){css=css.replace(/(\.hero::before\{[^}]*?url\(")[^"]+("\))/s,(_,a,b)=>a+value+b)}}else{const target=doc.querySelector(c.selector);if(target)target.textContent=value}}
+if(doc.querySelector('style'))doc.querySelector('style').textContent=css;
+working=serialize(doc);frame.srcdoc=working;
+}
+async function boot(){try{const response=await fetch('./index.html',{cache:'no-store'});if(!response.ok)throw Error('index.html okunamadı');source=await response.text();const stored=localStorage.getItem(KEY);if(stored){try{state=JSON.parse(stored)}catch{state={}}}makeFields();render();say('Önizleme hazır.')}catch(e){say('Hata: '+e.message+' — Bu dosyayı canlı sitenin kök dizinine koymalısın.')}}
+document.querySelector('#save').onclick=()=>{localStorage.setItem(KEY,JSON.stringify(state));say('Taslak bu tarayıcıda kaydedildi.')};
+document.querySelector('#reload').onclick=()=>{render();say('Önizleme yenilendi.')};
+document.querySelector('#reset').onclick=()=>{if(!confirm('Bu tarayıcıdaki taslağı sıfırlamak istiyor musun?'))return;localStorage.removeItem(KEY);state={};makeFields();render();say('Taslak sıfırlandı.')};
+document.querySelector('#export').onclick=()=>{const blob=new Blob([working],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='index-duzenlenmis.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);say('HTML dosyası indirildi. Canlı site değişmedi.')};
+boot();
+</script>
+</body></html>
